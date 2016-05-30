@@ -1,0 +1,15 @@
+<!--
+  ~ Copyright 2015, 2016 Département de Génie Électrique et Génie Informatique (GEGI) de l'Université de Sherbrooke (UdeS).
+  ~ Tous droits réservés / All rights reserved.
+  -->
+
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+    <g:HTMLPanel>
+    	<b:PageHeader text="Liste de mes groupes" subText="Opus" />
+        <g:HTMLPanel ui:field="panelGroups" />
+        <g:HTMLPanel ui:field="panelUsers" />
+    </g:HTMLPanel>
+</ui:UiBinder>

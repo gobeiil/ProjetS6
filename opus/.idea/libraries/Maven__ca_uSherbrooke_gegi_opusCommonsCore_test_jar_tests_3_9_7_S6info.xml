@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: ca.uSherbrooke.gegi:opusCommonsCore:test-jar:tests:3.9.7.S6info">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/ca/uSherbrooke/gegi/opusCommonsCore/3.9.7.S6info/opusCommonsCore-3.9.7.S6info-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/ca/uSherbrooke/gegi/opusCommonsCore/3.9.7.S6info/opusCommonsCore-3.9.7.S6info-test-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/ca/uSherbrooke/gegi/opusCommonsCore/3.9.7.S6info/opusCommonsCore-3.9.7.S6info-test-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  ~ Copyright 2015, 2016 Département de Génie Électrique et Génie Informatique (GEGI) de l'Université de Sherbrooke (UdeS).
+  ~ Tous droits réservés / All rights reserved.
+  -->
+
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.6.1//EN"
+        "https://raw.githubusercontent.com/gwtproject/gwt/2.6.1/distro-source/core/src/gwt-module.dtd">
+<module rename-to="opus">
+    <!-- Inherit the core Web Toolkit stuff. -->
+    <inherits name='com.google.gwt.user.User' />
+    <inherits name='com.google.gwt.inject.Inject' />
+
+    <!-- Default css -->
+    <inherits name='com.google.gwt.user.theme.standard.Standard' />
+    <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+    <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
+
+	<!-- GWT-Bootstrap												-->
+	<inherits name="org.gwtbootstrap3.GwtBootstrap3" />
+	<inherits name="org.gwtbootstrap3.extras.notify.Notify"/>
+    <inherits name="org.gwtbootstrap3.extras.select.Select"/>
+	
+	<!-- Module pour les classes partagées par Opus -->
+	<inherits name='ca.uSherbrooke.gegi.commons.core.opusCommonsCore'/>
+
+    <!-- Other module inherits -->
+    <inherits name='com.gwtplatform.dispatch.Dispatch' />
+    <inherits name='com.gwtplatform.mvp.MvpWithEntryPoint' />
+    <inherits name="com.wallissoftware.pushstate.PushState" />
+
+    <source path='client' />
+    <source path='shared' />
+    <source path="resources" />
+
+    <public path="resources">
+        <exclude name="**/*.java" />
+        <exclude name="**/*.class" />
+    </public>
+
+    <set-configuration-property name="gin.ginjector.modules" value="ca.uSherbrooke.gegi.opus.client.gin.ClientModule"/>
+	<set-configuration-property name="gwtp.bootstrapper" value="ca.uSherbrooke.gegi.commons.core.client.accessRestriction.BootstrapperImpl"/>
+</module>

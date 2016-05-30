@@ -1,0 +1,35 @@
+<!--
+  ~ Copyright 2015, 2016 Département de Génie Électrique et Génie Informatique (GEGI) de l'Université de Sherbrooke (UdeS).
+  ~ Tous droits réservés / All rights reserved.
+  -->
+
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+			 xmlns:g='urn:import:com.google.gwt.user.client.ui'
+			 xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+			 xmlns:b_html="urn:import:org.gwtbootstrap3.client.ui.html">
+             
+	<g:HTMLPanel>
+        <!-- Start interior panel of the side menu ... delete if unnecessary -->
+		<g:HTMLPanel ui:field="panelMenu">
+            <b:Heading size="H3">
+                <b:Anchor text="Data" targetHistoryToken="/nameToken" />
+            </b:Heading>
+            <b:FormGroup styleName="pull-right">
+                <b:ListBox ui:field="listBoxSort" title="Trier" />
+            </b:FormGroup>
+            <b:FormGroup>
+                <b:InputGroup>
+                    <b:InputGroupButton>
+                        <b:Button ui:field="buttonFilter" icon="SEARCH" title="Rechercher" />
+                    </b:InputGroupButton>
+                    <b:TextBox ui:field="textBoxFilter" title="Filtrer" placeholder="Rechercher" />
+                </b:InputGroup>
+            </b:FormGroup>
+            <b_html:UnorderedList ui:field="ulMenuContent" styleName="nav" />
+        </g:HTMLPanel>
+        <!-- End interior panel of the side menu -->
+		<b_html:UnorderedList ui:field="ulSidebar" b:id="sidebar">
+			<b:AnchorListItem icon="GLOBE" title="Tous les data" targetHistoryToken="/nameToken" />
+		</b_html:UnorderedList>
+    </g:HTMLPanel>
+</ui:UiBinder>

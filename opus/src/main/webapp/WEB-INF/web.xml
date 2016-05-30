@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015, 2016 Département de Génie Électrique et Génie Informatique (GEGI) de l'Université de Sherbrooke (UdeS).
+  ~ Tous droits réservés / All rights reserved.
+  -->
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+		 version="2.5">
+
+	<display-name>opus</display-name>
+
+	<welcome-file-list>
+		<welcome-file>opus.jsp</welcome-file>
+	</welcome-file-list>
+
+	<listener>
+		<listener-class>ca.uSherbrooke.gegi.opus.server.guice.GuiceServletConfig</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>guiceFilter</filter-name>
+		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>guiceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- Appelle le service CAS pour l'autentification -->
+	<filter>
+		<filter-name>CAS Filter</filter-name>
+		<filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
+		<init-param>
+			<param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
+			<param-value>https://cas.usherbrooke.ca/login</param-value>
+		</init-param>
+		<init-param>
+			<param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
+			<param-value>https://cas.usherbrooke.ca/serviceValidate</param-value>
+		</init-param>
+		<init-param>
+			<param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+			<param-value>localhost:8888</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+	<!-- Filtre servant à supprimer le ticket de l'URL -->
+	<filter>
+		<filter-name>Ticket Filter</filter-name>
+		<filter-class>ca.uSherbrooke.gegi.commons.core.server.utils.TicketFilter</filter-class>
+		<init-param>
+			<param-name>ServerName</param-name>
+			<param-value>localhost:8888</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>Ticket Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- JNDI DataSource for Database Connection Pooling on server -->
+	<resource-ref>
+		<description>DB Opus Connection</description>
+		<res-ref-name>jdbc/opus</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+</web-app>

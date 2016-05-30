@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015, 2016 Département de Génie Électrique et Génie Informatique (GEGI) de l'Université de Sherbrooke (UdeS).
+  ~ Tous droits réservés / All rights reserved.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 14 aout 2015 -->
+    <!-- - Pascale Maille, David Goulet et Bernard Beaulieu -->
+    <!-- - Fonctionne avec Apache Maven 3.1.1 -->
+    <!-- - /src/main/webapp doit avoir  WEB-INF -->
+    <!-- - /src/main/resources doit avoir META-INF  -->
+    <!-- - utiliser mvn clean install -->
+    <!-- - pour créer le fichier war l'ordre des plug ins est important -->
+    <!-- - définir les variables : -->
+    <!-- <skipTest>false</skipTest> -->
+    <!-- <skipCompileGWT>false</skipCompileGWT> -->
+    <!-- Le hostnamePort doit avoir la valeur du serveur tomcat résidant -->
+    <!-- <hostNamePort>localhost:8081</hostNamePort> -->
+    <!-- <warName>opusPinBoard</warName> -->
+    <!-- <module>ca.uSherbrooke.gegi.opusPinboard.OpusPinboard</module> -->
+
+    <groupId>ca.uSherbrooke.gegi</groupId>
+    <artifactId>opus</artifactId>
+    <version>0.0.1</version>
+    <packaging>war</packaging>
+    <name>opus</name>
+
+    <properties>
+        <!-- variable à modifier -->
+        <skipTest>true</skipTest>
+        <skipCompileGWT>false</skipCompileGWT>
+        <hostNamePort>localhost:8444</hostNamePort>
+        <warName>opus</warName>
+        <module>ca.uSherbrooke.gegi.opus.opus</module>
+
+        <!-- client -->
+        <skipTest>true</skipTest>
+        <gwt.version>2.7.0</gwt.version>
+        <gwtp.version>1.5.1</gwtp.version>
+        <gin.version>2.1.2</gin.version>
+        <gwt.style>OBF</gwt.style>
+        <gwt-bootstrap3.version>0.9.2</gwt-bootstrap3.version>
+
+        <!-- server -->
+        <guice.version>4.0-beta</guice.version>
+
+        <!-- maven -->
+        <maven.deploy.version>2.7</maven.deploy.version>
+        <maven.surfire.version>2.12</maven.surfire.version>
+        <maven.war.version>2.3</maven.war.version>
+        <maven.compiler.version>2.3.2</maven.compiler.version>
+        <maven.install.version>2.5.1</maven.install.version>
+        <maven-source-plugin.version>2.2</maven-source-plugin.version>
+        <gwt-maven-plugin.version>2.7.0</gwt-maven-plugin.version>
+        <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
+        <maven-war-plugin.version>2.0.1</maven-war-plugin.version>
+        <gwt-pushstate.version>2.0.0</gwt-pushstate.version>
+
+        <!-- testing -->
+        <junit.version>4.11</junit.version>
+        <jukito.version>1.4</jukito.version>
+
+        <!-- log -->
+        <slf4j>1.7.5</slf4j>
+        <log4j>1.2.17</log4j>
+
+        <!--divers -->
+        <target.jdk>1.7</target.jdk>
+        <sourceEncoding>UTF-8</sourceEncoding>
+        <buildNumber>${maven.build.timestamp}</buildNumber>
+        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Université de Sherbrooke</name>
+        <url>http://www.gel.usherbrooke.ca</url>
+    </organization>
+
+    <repositories>
+        <repository>
+            <id>central-maven</id>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>central-google</id>
+            <url>http://google-maven-repository.googlecode.com/svn/repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>sonatype.snapshots</id>
+            <name>Sonatype snapshot repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
+
+    <build>
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+        <finalName>${warName}</finalName>
+
+        <plugins>
+            <!-- Compile les classes java et les insérer dans le répertoire target
+                <warName> WEB_INF classes -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${target.jdk}</source>
+                    <target>${target.jdk}</target>
+                    <encoding>${sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- JUnit Testing - skip *.GwtTest cases -->
+            <!-- 'mvn test' - runs the Jukito tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <skipTests>${skipTest}</skipTests>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*GwtTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Encode les fichiers sources en utilisant la valeur de ${sourceEncoding} -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>${sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <!--Compile le code client java en javascript -->
+            <!-- 'mvn gwt:run' - runs development mode -->
+            <!-- 'mvn gwt:debug' - runs debug mode -->
+            <!-- 'mvn gwt:compile' - compiles gwt -->
+            <!-- 'mvn integration-test' - runs the gwt tests (*GwtTest.java) -->
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwt-maven-plugin.version}</version>
+                <configuration>
+                    <includes>**/*GwtTest.java</includes>
+                    <extraJvmArgs>-Xss1024K -Xmx1024M -XX:MaxPermSize=256M</extraJvmArgs>
+                    <copyWebapp>true</copyWebapp>
+                    <hostedWebapp>${webappDirectory}</hostedWebapp>
+                    <style>${gwt.style}</style>
+                    <modules>
+                        <module>${module}</module>
+                    </modules>
+                </configuration>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <skip>${skipCompileGWT}</skip>
+                        </configuration>
+                        <goals>
+                            <goal>compile</goal>
+                            <!-- <goal>test</goal> -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Crée le fichier war à partir du répertoire target <warName> -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.0.1</version>
+                <executions>
+                    <execution>
+                        <id>prepare-war</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--Remplace le nom du serveur dans le fichier web.xml pour CAS -->
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <id>replace</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <file>${webappDirectory}/WEB-INF/web.xml</file>
+                            <token>(?m)localhost:8888</token>
+                            <value>${hostNamePort}</value>
+                            <regexFlags>
+                                <regex>MULTILINE</regex>
+                            </regexFlags>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <!-- Resources NEED to be commented when creating war -->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                    <include>**/*.ui.xml</include>
+                    <include>**/*WithoutEntryPoint.gwt.xml</include>
+                    <include>**/resources/**/*.*</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencies>
+        <!-- Google Web Toolkit -->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwt.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <!-- Nécessaire quand  gwt-user est provided-->
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwt.version}</version>
+        </dependency>
+
+        <!-- GWT-Platform -->
+        <dependency>
+            <groupId>com.gwtplatform</groupId>
+            <artifactId>gwtp-mvp-client</artifactId>
+            <version>${gwtp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.gwtplatform</groupId>
+            <artifactId>gwtp-dispatch-rpc-client</artifactId>
+            <version>${gwtp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.gwtplatform</groupId>
+            <artifactId>gwtp-dispatch-rpc-server-guice</artifactId>
+            <version>${gwtp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gwtplatform</groupId>
+            <artifactId>gwtp-dispatch-rpc-shared</artifactId>
+            <version>${gwtp.version}</version>
+        </dependency>
+
+        <!-- DI -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt.inject</groupId>
+            <artifactId>gin</artifactId>
+            <version>${gin.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wallissoftware</groupId>
+            <artifactId>gwt-pushstate</artifactId>
+            <version>${gwt-pushstate.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ca.uSherbrooke.gegi</groupId>
+            <artifactId>opusCommonsCore</artifactId>
+            <version>3.9.7.S6info</version>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jukito</groupId>
+            <artifactId>jukito</artifactId>
+            <version>${jukito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ca.uSherbrooke.gegi</groupId>
+            <artifactId>opusCommonsCore</artifactId>
+            <version>3.9.7.S6info</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+    </dependencies>
+</project>
+
