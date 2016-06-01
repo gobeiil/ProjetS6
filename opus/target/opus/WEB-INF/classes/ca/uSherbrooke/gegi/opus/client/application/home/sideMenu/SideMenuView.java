@@ -66,7 +66,7 @@ public class SideMenuView extends ViewWithUiHandlers<SideMenuUiHandlers> impleme
 			for(Data d : listData){
 				a = new AnchorListItem();
 				a.setText(d.getLabel());
-				a.setTargetHistoryToken(NameTokens.home.replace("{dataId}", d.getId().toString())); // TODO : replace with right nameToken and path parameter or delete if unnecessary
+				a.setTargetHistoryToken(NameTokens.userGroups.replace("{dataId}", d.getId().toString())); // TODO : replace with right nameToken and path parameter or delete if unnecessary
 
 				ulMenuContent.add(a);
 			}

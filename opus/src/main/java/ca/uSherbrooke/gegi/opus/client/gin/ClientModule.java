@@ -27,6 +27,6 @@ public class ClientModule extends AbstractPresenterModule {
         install(new ca.uSherbrooke.gegi.commons.core.client.gin.ClientModule());
         install(new OpusModule());
 		
-		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.home);       
+		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.userGroups);
     }
 }

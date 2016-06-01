@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -23,16 +24,18 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
     private final Widget widget;
 
-    @UiField HTMLPanel panelGroups;
-    @UiField HTMLPanel panelUsers;
+    @UiField Page        panelGroups;
+    @UiField HTMLPanel   panelUsers;
+    @UiField SimplePager pager;
 
-    public interface Binder extends UiBinder<Widget, HomePageView> {
-    }
+    public interface Binder extends UiBinder<Widget, HomePageView> {}
 
     @Inject
     public HomePageView(final Binder binder) {
         widget = binder.createAndBindUi(this);
         bindSlot(HomePagePresenter.SLOT_USERS, panelUsers);
+
+        panelGroups.setPager(pager);
     }
 
     @Override
@@ -41,12 +44,12 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
     }
 
     public void resetView() {
-        panelGroups.clear();
+        panelGroups.getListDataProvider().getList().clear();
         panelUsers.clear();
     }
 
-    public void setListGroup(List<GroupData> listGroup){
-        panelGroups.clear();
+    public void setListGroup(List<GroupData> listGroup) {
+        panelGroups.getListDataProvider().getList().clear();
 
         for (final GroupData gd : listGroup) {
             Button b = new Button(gd.getLabel());
@@ -59,7 +62,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
                 }
             });
 
-            panelGroups.add(b);
+            panelGroups.getListDataProvider().getList().add(b);
         }
     }
 

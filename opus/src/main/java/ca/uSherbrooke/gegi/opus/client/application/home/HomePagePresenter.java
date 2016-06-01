@@ -7,6 +7,7 @@ package ca.uSherbrooke.gegi.opus.client.application.home;
 
 import javax.inject.Inject;
 
+import ca.uSherbrooke.gegi.commons.core.client.accessRestriction.AuthenticationGatekeeper;
 import ca.uSherbrooke.gegi.commons.core.client.presenter.application.ApplicationPresenter;
 import ca.uSherbrooke.gegi.commons.core.client.utils.AsyncCallbackFailed;
 import ca.uSherbrooke.gegi.commons.core.shared.dispatch.GetGroups;
@@ -30,6 +31,7 @@ import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
+import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
 import com.gwtplatform.mvp.client.presenter.slots.Slot;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 
@@ -52,8 +54,8 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
     }
 
     @ProxyStandard
-    @NameToken(NameTokens.home)
-	/*@UseGatekeeper(AuthenticationGatekeeper.class)*/
+    @NameToken(NameTokens.userGroups)
+	//@UseGatekeeper(AuthenticationGatekeeper.class)
     public interface MyProxy extends ProxyPlace<HomePagePresenter> {
     }
 

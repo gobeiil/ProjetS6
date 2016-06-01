@@ -5,10 +5,13 @@
 
 package ca.uSherbrooke.gegi.opus.server.guice;
 
+import ca.uSherbrooke.gegi.opus.server.dispatch.DeleteUserActionHandler;
+import ca.uSherbrooke.gegi.opus.shared.dispatch.DeleteUser;
 import com.gwtplatform.dispatch.rpc.server.guice.HandlerModule;
 
 public class ServerModule extends HandlerModule {
     @Override
     protected void configureHandlers() {
+        bindHandler(DeleteUser.class, DeleteUserActionHandler.class);
     }
 }

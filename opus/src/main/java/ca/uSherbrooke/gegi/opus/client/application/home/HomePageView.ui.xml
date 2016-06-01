@@ -5,11 +5,14 @@
 
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:opus_page='urn:import:ca.uSherbrooke.gegi.opus.client.application.home'
+             xmlns:g_pager='urn:import:com.google.gwt.user.cellview.client'
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
     <g:HTMLPanel>
     	<b:PageHeader text="Liste de mes groupes" subText="Opus" />
-        <g:HTMLPanel ui:field="panelGroups" />
+        <opus_page:Page ui:field="panelGroups" />
+        <g_pager:SimplePager ui:field="pager" location="CENTER" width="100%" />
         <g:HTMLPanel ui:field="panelUsers" />
     </g:HTMLPanel>
 </ui:UiBinder>

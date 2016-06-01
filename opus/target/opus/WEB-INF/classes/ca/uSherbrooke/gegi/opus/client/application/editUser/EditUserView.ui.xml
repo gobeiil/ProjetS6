@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright 2015, 2016 Département de Génie Électrique et Génie Informatique (GEGI) de l'Université de Sherbrooke (UdeS).
+  ~ Tous droits réservés / All rights reserved.
+  -->
+
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+    <g:HTMLPanel>
+        <b:Form ui:field="formUserInfo">
+            <b:FieldSet ui:field="fieldSetUser">
+                <b:Legend text="Usager" />
+                <b:FormGroup>
+                    <b:FormLabel text="Prénom" showRequiredIndicator="true" />
+                    <b:InlineHelpBlock iconType="EXCLAMATION_TRIANGLE" />
+                    <b:TextBox ui:field="textBoxFirstName" allowBlank="false" validateOnBlur="true" />
+                </b:FormGroup>
+                <b:FormGroup>
+                    <b:FormLabel text="Nom" showRequiredIndicator="true" />
+                    <b:InlineHelpBlock iconType="EXCLAMATION_TRIANGLE" />
+                    <b:TextBox ui:field="textBoxLastName" allowBlank="false" validateOnBlur="true" />
+                </b:FormGroup>
+                <b:FormGroup>
+                    <b:FormLabel text="Identifiant unique personnel" showRequiredIndicator="true" />
+                    <b:InlineHelpBlock iconType="EXCLAMATION_TRIANGLE" />
+                    <b:TextBox ui:field="textBoxAdministrativeUserId" enabled="false" allowBlank="false" validateOnBlur="true" />
+                </b:FormGroup>
+                <b:FormGroup>
+                    <b:FormLabel text="Adresse courriel" showRequiredIndicator="true" />
+                    <b:InlineHelpBlock iconType="EXCLAMATION_TRIANGLE" />
+                    <b:TextBox ui:field="textBoxEmail" allowBlank="false" validateOnBlur="true" />
+                </b:FormGroup>
+            </b:FieldSet>
+        </b:Form>
+        <b:ButtonGroup styleName="button-group-edit" pull="RIGHT">
+            <b:Button ui:field="buttonCancel" text="Annuler" icon="BACKWARD" type="LINK" />
+            <b:Button ui:field="buttonDelete" text="Supprimer" title="Supprimer" icon="TRASH_O" />
+            <b:Button ui:field="buttonSave" text="Sauvegarder" icon="SAVE" type="PRIMARY" />
+        </b:ButtonGroup>
+    </g:HTMLPanel>
+</ui:UiBinder>

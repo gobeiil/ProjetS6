@@ -6,11 +6,11 @@
 package ca.uSherbrooke.gegi.opus.client.place;
 
 public class NameTokens {
-    public static final String home = "/home";
-    public static final String editUser = "/editUser/{userId}";
+    public static final String userGroups = "/userGroups";
+    public static final String editUser   = "/editUser/{userId}";
 
-    public static String getHome() {
-        return home;
+    public static String getUserGroups() {
+        return userGroups;
     }
 
     public static String getEditUser() {
