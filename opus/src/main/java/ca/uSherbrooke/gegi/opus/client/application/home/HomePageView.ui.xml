@@ -20,9 +20,10 @@
     <g:HTMLPanel>
         <b:PageHeader text="Liste de mes groupes" subText="Opus" />
         <opus_page:Page ui:field="panelGroups" />
-        <g_pager:SimplePager ui:field="pager" location="CENTER" width="100%" />
-    	<b:PageHeader text="Bulletin" subText="Opus" />
         <g:HTMLPanel ui:field="panelUsers" />
+        <g_pager:SimplePager ui:field="pager" location="CENTER" width="100%" />
+        <b:PageHeader text="Bulletin" subText="Opus" />
+
 
         <div class='{style.pretty}'>
         <g:DisclosurePanel>
