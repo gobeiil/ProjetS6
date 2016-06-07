@@ -8,11 +8,47 @@
              xmlns:opus_page='urn:import:ca.uSherbrooke.gegi.opus.client.application.home'
              xmlns:g_pager='urn:import:com.google.gwt.user.cellview.client'
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+    <ui:style>
+        .pretty { background-color:#ADD8C3; max-width:500px;}
+        .fat-text {color:white; font-size:300%}
+        th, td {
+            padding: 5px;
+        }
+
+    </ui:style>
 
     <g:HTMLPanel>
-    	<b:PageHeader text="Liste de mes groupes" subText="Opus" />
+        <b:PageHeader text="Liste de mes groupes" subText="Opus" />
         <opus_page:Page ui:field="panelGroups" />
         <g_pager:SimplePager ui:field="pager" location="CENTER" width="100%" />
+    	<b:PageHeader text="Bulletin" subText="Opus" />
         <g:HTMLPanel ui:field="panelUsers" />
+
+        <div class='{style.pretty}'>
+        <g:DisclosurePanel>
+            <g:header>GEN 700 - Théorie des tests</g:header>
+            <g:HTMLPanel>
+                <table style="width:100%">
+                    <tr>
+                        <th>Firstname</th>
+                        <th>Lastname</th>
+                        <th>Points</th>
+                    </tr>
+                    <tr>
+                        <td>Jill</td>
+                        <td>Smith</td>
+                        <td>50</td>
+                    </tr>
+                    <tr>
+                        <td>Eve</td>
+                        <td>Jackson</td>
+                        <td>94</td>
+                    </tr>
+                </table>
+            </g:HTMLPanel>
+        </g:DisclosurePanel>
+        </div>
+        <div class='{style.pretty}'><label>80\300</label></div>
+
     </g:HTMLPanel>
 </ui:UiBinder>
