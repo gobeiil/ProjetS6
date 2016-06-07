@@ -11,13 +11,17 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.html.Div;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> implements HomePagePresenter.MyView {
@@ -27,6 +31,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
     @UiField Page        panelGroups;
     @UiField HTMLPanel   panelUsers;
     @UiField SimplePager pager;
+    @UiField HTMLPanel educationalGoalPanel;
 
     public interface Binder extends UiBinder<Widget, HomePageView> {}
 
@@ -66,7 +71,34 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
         }
     }
 
-    public void clearUsers(){
-        panelUsers.clear();
+    public void clearUsers(){ panelUsers.clear(); }
+
+    public void setEducationalGoalPanel(ArrayList<String> educGoalArray){
+
+        for (String item: educGoalArray) {
+
+            Div educGoalDiv = new Div();
+
+            Label educGoalName = new Label(item);
+
+            DisclosurePanel educGoalEvaluationTable = new DisclosurePanel();
+
+            educGoalEvaluationTable.setHeader(new Label("\u25BA"));
+
+            Grid grid = new Grid(2,2);
+
+            grid.setBorderWidth(3);
+
+            educGoalEvaluationTable.setContent(grid);
+
+            educGoalDiv.add(educGoalName);
+            educGoalDiv.add(educGoalEvaluationTable);
+
+            educationalGoalPanel.add(educGoalDiv);
+        }
+
+
+
+
     }
 }

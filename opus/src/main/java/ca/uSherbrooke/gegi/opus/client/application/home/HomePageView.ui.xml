@@ -49,7 +49,10 @@
             </g:HTMLPanel>
         </g:DisclosurePanel>
         </div>
+
         <div class='{style.pretty}'><label>80\300</label></div>
+
+        <g:HTMLPanel ui:field="educationalGoalPanel" />
 
     </g:HTMLPanel>
 </ui:UiBinder>

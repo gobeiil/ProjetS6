@@ -43,6 +43,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
     public static final Slot SLOT_USERS = new Slot();
     public final IndirectProvider<UserWidgetPresenter> provider;
     private List<UserData> listUser;
+    public static ArrayList<String> testArray = new ArrayList<>();
 
     @Inject DispatchAsync dispatchAsync;
     @Inject SideMenuPresenter sideMenuPresenter;
@@ -51,6 +52,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         public void setListGroup(List<GroupData> listGroup);
         public void clearUsers();
         public void resetView();
+        public void setEducationalGoalPanel(ArrayList<String> educGoalArray);
     }
 
     @ProxyStandard
@@ -84,6 +86,12 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveAdministratedGroups(true);
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
+
+        testArray.add(0,"CoursA");
+        testArray.add(1,"CoursB");
+        testArray.add(2,"CoursC");
+
+        getView().setEducationalGoalPanel(testArray);
     }
 
     @Override
