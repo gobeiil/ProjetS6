@@ -8,14 +8,8 @@
              xmlns:opus_page='urn:import:ca.uSherbrooke.gegi.opus.client.application.home'
              xmlns:g_pager='urn:import:com.google.gwt.user.cellview.client'
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
-    <ui:style>
-        .pretty { background-color:#ADD8C3; max-width:500px;}
-        .fat-text {color:white; font-size:300%}
-        th, td {
-            padding: 5px;
-        }
 
-    </ui:style>
+    <ui:style src="HomePageStyles.css" />
 
     <g:HTMLPanel>
         <b:PageHeader text="Liste de mes groupes" subText="Opus" />

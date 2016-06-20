@@ -87,9 +87,9 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
 
-        testArray.add(0,"CoursA");
-        testArray.add(1,"CoursB");
-        testArray.add(2,"CoursC");
+        testArray.add(0,"GIF-600");
+        testArray.add(1,"GIF-601");
+        testArray.add(2,"GIF-602");
 
         getView().setEducationalGoalPanel(testArray);
     }
