@@ -43,7 +43,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
     public static final Slot SLOT_USERS = new Slot();
     public final IndirectProvider<UserWidgetPresenter> provider;
     private List<UserData> listUser;
-    public static ArrayList<String> testArray = new ArrayList<>();
+    public static ArrayList<String> educGoalArray = new ArrayList<>();
 
     @Inject DispatchAsync dispatchAsync;
     @Inject SideMenuPresenter sideMenuPresenter;
@@ -87,11 +87,11 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
 
-        testArray.add(0,"GIF-600");
-        testArray.add(1,"GIF-601");
-        testArray.add(2,"GIF-602");
+        educGoalArray.add(0,"GIF-600 - Theorie de la vie 1");
+        educGoalArray.add(1,"GIF-601 - Theorie de la vie 2");
+        educGoalArray.add(2,"GIF-602 - Theorie de la vie 3");
 
-        getView().setEducationalGoalPanel(testArray);
+        getView().setEducationalGoalPanel(educGoalArray);
     }
 
     @Override
