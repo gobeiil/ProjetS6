@@ -1,6 +1,7 @@
 package ca.uSherbrooke.gegi.opus.server.dispatch;
 
 import ca.uSherbrooke.gegi.opus.server.GradingDatabase.ResultSetParser;
+import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGrading;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGradingResult;
 import ca.uSherbrooke.gegi.persist.dao.Dao;
@@ -9,6 +10,7 @@ import com.google.inject.Inject;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
+import org.postgresql.util.PGobject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +25,17 @@ public class GetGradingActionHandler implements ActionHandler<GetGrading, GetGra
 
     @Override
     public GetGradingResult execute(GetGrading getGrading, ExecutionContext executionContext) throws ActionException {
-        dao.clearEntityManager();
+        /*dao.clearEntityManager();
 
-        List<String> stringList = (List<String>) dao.getNamedResultList("Select bulletin.f_getegbystudent(\'"+ getGrading.getCip() + "\')");
-        ArrayList<String> stringArrayList = new ArrayList<String>(stringList);
+        List<PGobject> pGobjects = (List<PGobject>) dao.getNativeResultList("Select bulletin.f_getegbystudent(\'"+ getGrading.getCip() + "\')");
+        ArrayList<String> stringArrayList = new ArrayList<String>();
 
 
-        return ResultSetParser.parseGradingQuery(stringArrayList);
+        return ResultSetParser.parseGradingQuery(stringArrayList);*/
+
+        ArrayList<Course> list = new ArrayList<Course>();
+        list.add(new Course("GIF69", "test"));
+        return new GetGradingResult(list);
     }
 
     @Override

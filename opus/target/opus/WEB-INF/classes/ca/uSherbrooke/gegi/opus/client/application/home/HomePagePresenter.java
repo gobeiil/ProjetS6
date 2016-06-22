@@ -92,7 +92,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         dispatchAsync.execute(new GetGrading("gobb2201"), new AsyncCallback<GetGradingResult>() {
             @Override
             public void onFailure(Throwable throwable) {
-                AsyncCallbackFailed.asyncCallbackFailed(throwable, "La liste des usagers membres du groupe est inaccessible.");
+                AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes.");
             }
 
             @Override

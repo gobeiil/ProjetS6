@@ -1,7 +1,6 @@
 package ca.uSherbrooke.gegi.opus.server.GradingDatabase;
 
 import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
-import ca.uSherbrooke.gegi.opus.shared.Grading.GradingQueryResult;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGradingResult;
 
 import java.sql.ResultSet;

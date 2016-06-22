@@ -7,23 +7,17 @@ package ca.uSherbrooke.gegi.opus.client.application.home;
 
 import ca.uSherbrooke.gegi.commons.core.shared.entity.GroupData;
 import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
-import ca.uSherbrooke.gegi.opus.shared.Grading.GradingQueryResult;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Row;
-import org.gwtbootstrap3.client.ui.TabListItem;
-import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.html.Div;
 
@@ -81,10 +75,10 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
     public void clearUsers(){ panelUsers.clear(); }
 
-    public void setEducationalGoalPanel(GradingQueryResult gradingResult){
-
-        for (Course course: gradingResult.getCourseList()) {
-
+    public void setEducationalGoalPanel(ArrayList<String> educationalGoalArray){
+        GWT.log(educationalGoalArray.get(0));
+        for (String item: educationalGoalArray) {
+            GWT.log(item);
             int nbCompEducaGoal = 3;
             int nbEvaluationEducaGoal = 3;
 
@@ -95,7 +89,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             //educGoalDiv.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
             //educGoalDiv.getElement().getStyle().setBorderWidth(2, PX);
 
-            Label educGoalName = new Label(course.getLabel() + " - " + course.getCourseName());
+            Label educGoalName = new Label(item);
             educGoalName.getElement().getStyle().setMarginBottom(0,PX);
             educGoalName.getElement().getStyle().setBackgroundColor("#339933");
             educGoalName.getElement().getStyle().setFontSize(16,PX);
