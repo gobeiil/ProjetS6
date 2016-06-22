@@ -8,6 +8,6 @@ import ca.uSherbrooke.gegi.opus.server.GradingDatabase.GradingQueryExecution;
 public class GetGradingInfo {
     public GradingQueryResult GetGradingInfoFromCip(String cip)
     {
-        return (new GradingQueryExecution().getCoursesFromCip(cip));
+        return new GradingQueryExecution().getCoursesFromCip(cip);
     }
 }

@@ -20,6 +20,8 @@ import ca.uSherbrooke.gegi.opus.client.application.home.sideMenu.SideMenuPresent
 import ca.uSherbrooke.gegi.opus.client.application.home.user.UserWidgetPresenter;
 import ca.uSherbrooke.gegi.opus.client.place.NameTokens;
 
+import ca.uSherbrooke.gegi.opus.shared.Grading.GetGradingInfo;
+import ca.uSherbrooke.gegi.opus.shared.Grading.GradingQueryResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
 import com.google.web.bindery.event.shared.EventBus;
@@ -52,7 +54,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         public void setListGroup(List<GroupData> listGroup);
         public void clearUsers();
         public void resetView();
-        public void setEducationalGoalPanel(ArrayList<String> educGoalArray);
+        public void setEducationalGoalPanel(GradingQueryResult gradingResult);
     }
 
     @ProxyStandard
@@ -91,7 +93,10 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         educGoalArray.add(1,"GIF-601 - Theorie de la vie 2");
         educGoalArray.add(2,"GIF-602 - Theorie de la vie 3");
 
-        getView().setEducationalGoalPanel(educGoalArray);
+        GetGradingInfo getGradingInfo = new GetGradingInfo();
+        GradingQueryResult gradingQueryResult = getGradingInfo.GetGradingInfoFromCip("aubm2009");
+
+        getView().setEducationalGoalPanel(gradingQueryResult);
     }
 
     @Override
