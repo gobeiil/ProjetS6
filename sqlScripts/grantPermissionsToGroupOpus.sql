@@ -1,0 +1,13 @@
+GRANT ALL ON TABLE bulletin.corrected_copy TO GROUP opus;
+GRANT ALL ON TABLE bulletin.criterion TO GROUP opus;
+GRANT ALL ON TABLE bulletin.educational_goal_mix TO GROUP opus;
+GRANT ALL ON TABLE bulletin.educational_goal_evaluation TO GROUP opus;
+GRANT ALL ON TABLE bulletin.evaluation_mix TO GROUP opus;
+GRANT ALL ON TABLE bulletin.educational_goal_mix TO GROUP opus;
+GRANT ALL ON TABLE bulletin.notif_eval TO GROUP opus;
+GRANT ALL ON TABLE bulletin.rubric TO GROUP opus;
+GRANT ALL ON TABLE bulletin.student TO GROUP opus;
+GRANT ALL ON TABLE bulletin.student_corrected_copy TO GROUP opus;
+GRANT ALL ON TABLE bulletin.student_score TO GROUP opus;
+GRANT ALL ON TABLE bulletin.timespan TO GROUP opus;
+GRANT ALL ON TABLE bulletin.tuiles TO GROUP opus;

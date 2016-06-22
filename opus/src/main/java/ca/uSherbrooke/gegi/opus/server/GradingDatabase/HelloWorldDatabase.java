@@ -1,5 +1,8 @@
 package ca.uSherbrooke.gegi.opus.server.GradingDatabase;
 
+import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
+import ca.uSherbrooke.gegi.opus.shared.Grading.GradingQueryResult;
+
 import java.sql.*;
 
 /**
@@ -8,7 +11,7 @@ import java.sql.*;
 public class HelloWorldDatabase {
     public static void main(String[] args)
     {
-        try {
+        /*try {
             Connection connection = DriverManager.getConnection("jdbc:postgresql:opus", "appopus", "appopus");
             System.out.println("lalalala");
             Statement statement = connection.createStatement();
@@ -21,6 +24,12 @@ public class HelloWorldDatabase {
         catch (Exception e)
         {
             System.out.println(e);
+        }*/
+        GradingQueryResult result = (new GradingQueryExecution()).getCoursesFromCip("gobb2201");
+        System.out.println(result.getCip());
+        for (Course course :
+                result.getCourseList()) {
+            System.out.println(course.getLabel() + " - " + course.getCourseName());
         }
     }
 }
