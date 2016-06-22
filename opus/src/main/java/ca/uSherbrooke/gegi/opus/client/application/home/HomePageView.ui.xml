@@ -18,33 +18,7 @@
         <g_pager:SimplePager ui:field="pager" location="CENTER" width="100%" />
         <b:PageHeader text="Bulletin" subText="Opus" />
 
-
-        <div class='{style.pretty}'>
-        <g:DisclosurePanel>
-            <g:header>GEN 700 - Théorie des tests</g:header>
-            <g:HTMLPanel>
-                <table style="width:100%">
-                    <tr>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
-                        <th>Points</th>
-                    </tr>
-                    <tr>
-                        <td>Jill</td>
-                        <td>Smith</td>
-                        <td>50</td>
-                    </tr>
-                    <tr>
-                        <td>Eve</td>
-                        <td>Jackson</td>
-                        <td>94</td>
-                    </tr>
-                </table>
-            </g:HTMLPanel>
-        </g:DisclosurePanel>
-        </div>
-
-        <div class='{style.pretty}'><label>80\300</label></div>
+        <g:HTMLPanel ui:field="sessionDropdown" />
 
         <g:HTMLPanel ui:field="educationalGoalPanel" />
 

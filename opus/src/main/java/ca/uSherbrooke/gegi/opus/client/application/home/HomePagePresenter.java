@@ -48,6 +48,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
     public final IndirectProvider<UserWidgetPresenter> provider;
     private List<UserData> listUser;
     public static ArrayList<String> educGoalArray = new ArrayList<>();
+    public static ArrayList<String> sessionArray = new ArrayList<>();
 
     @Inject DispatchAsync dispatchAsync;
     @Inject SideMenuPresenter sideMenuPresenter;
@@ -57,6 +58,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         public void clearUsers();
         public void resetView();
         public void setEducationalGoalPanel(ArrayList<String> educGoalArray);
+        public void setSessionDropdown(ArrayList<String> sessionArray);
     }
 
     @ProxyStandard
@@ -96,6 +98,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
                 AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes.");
             }
 
+
             @Override
             public void onSuccess(GetGradingResult getGradingResult) {
                 int i = 0;
@@ -106,6 +109,15 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
                 getView().setEducationalGoalPanel(educGoalArray);
             }
         });
+
+        sessionArray.add(0,"Session 1");
+        sessionArray.add(1,"Session 2");
+        sessionArray.add(2,"Session 3");
+        sessionArray.add(3,"Session 4");
+        sessionArray.add(4,"Session 5");
+
+        getView().setEducationalGoalPanel(educGoalArray);
+        getView().setSessionDropdown(sessionArray);
     }
 
     @Override

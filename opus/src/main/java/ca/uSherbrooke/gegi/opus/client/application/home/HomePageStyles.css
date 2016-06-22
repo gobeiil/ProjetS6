@@ -3,9 +3,8 @@
     text-align: right;
 }
 
-.fat-text {color:white; font-size:300%}
-th, td {
-    padding: 5px;
-}
+.fatText {color:white; font-size:300%}
+
 
 .pretty { background-color:#ADD8C3; max-width:500px;}
+

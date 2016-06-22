@@ -9,6 +9,7 @@ import ca.uSherbrooke.gegi.commons.core.shared.entity.GroupData;
 import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import static com.google.gwt.dom.client.Style.Unit.PX;
 
+
 public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> implements HomePagePresenter.MyView {
 
     private final Widget widget;
@@ -34,6 +36,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
     @UiField HTMLPanel   panelUsers;
     @UiField SimplePager pager;
     @UiField HTMLPanel educationalGoalPanel;
+    @UiField HTMLPanel sessionDropdown;
 
     public interface Binder extends UiBinder<Widget, HomePageView> {}
 
@@ -73,6 +76,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
         }
     }
 
+
     public void clearUsers(){ panelUsers.clear(); }
 
     public void setEducationalGoalPanel(ArrayList<String> educationalGoalArray){
@@ -90,54 +94,54 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             //educGoalDiv.getElement().getStyle().setBorderWidth(2, PX);
 
             Label educGoalName = new Label(item);
-            educGoalName.getElement().getStyle().setMarginBottom(0,PX);
-            educGoalName.getElement().getStyle().setBackgroundColor("#339933");
-            educGoalName.getElement().getStyle().setFontSize(16,PX);
+            educGoalName.getElement().getStyle().setPaddingTop(4, PX);
+            educGoalName.getElement().getStyle().setBackgroundColor("#2D9D5F");
+            educGoalName.getElement().getStyle().setFontSize(16, PX);
             educGoalName.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
-            educGoalName.getElement().getStyle().setTextIndent(5,PX);
-            educGoalName.getElement().getStyle().setHeight(30,PX);
+            educGoalName.getElement().getStyle().setTextIndent(5, PX);
+            educGoalName.getElement().getStyle().setHeight(30, PX);
 
             DisclosurePanel educGoalEvaluationTable = new DisclosurePanel();
             educGoalEvaluationTable.getElement().getStyle().setWidth(500, PX);
             educGoalEvaluationTable.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
-            educGoalEvaluationTable.getElement().getStyle().setBorderWidth(2, PX);
+            educGoalEvaluationTable.getElement().getStyle().setBorderWidth(0.5, PX);
+            educGoalEvaluationTable.getElement().getStyle().setBorderColor("#000000");
+
 
             //educGoalEvaluationTable.setHeader(new Label("\u25B8" + " " + item));
 
-            Grid evaluationGrid = new Grid(nbEvaluationEducaGoal,nbCompEducaGoal+1);
-            evaluationGrid.setBorderWidth(3);
+            Grid evaluationGrid = new Grid(nbEvaluationEducaGoal, nbCompEducaGoal + 1);
+            evaluationGrid.setBorderWidth(1);
 
-            for(int i = 0; i<=nbCompEducaGoal; i++)
-            {
-                evaluationGrid.getColumnFormatter().setWidth(i,"112");
+
+            for (int i = 0; i <= nbCompEducaGoal; i++) {
+                evaluationGrid.getColumnFormatter().setWidth(i, "112");
             }
 
-            for(int j = 0; j<nbEvaluationEducaGoal; j++)
-            {
-                evaluationGrid.setText(j,0,"Travail " + (j+1));
+            for (int j = 0; j < nbEvaluationEducaGoal; j++) {
+                evaluationGrid.setText(j, 0, "Travail " + (j + 1));
 
-                for(int k = 1; k<=nbCompEducaGoal; k++)
-                {
+                for (int k = 1; k <= nbCompEducaGoal; k++) {
                     //if(k == nbCompEducaGoal)
                     //    evaluationGrid.setText(j,k,"300/300");
                     //else
-                        evaluationGrid.setText(j,k,"100/100");
+                    evaluationGrid.setText(j, k, "100/100");
 
-                    evaluationGrid.getCellFormatter().getElement(j,k).getStyle().setTextAlign(Style.TextAlign.CENTER);
+                    evaluationGrid.getCellFormatter().getElement(j, k).getStyle().setTextAlign(Style.TextAlign.CENTER);
                 }
             }
 
-            Grid totalGrid = new Grid(1,nbCompEducaGoal);
-            totalGrid.setBorderWidth(3);
+            Grid totalGrid = new Grid(1, nbCompEducaGoal);
+            totalGrid.setBorderWidth(1);
 
-            for(int i = 0; i<nbCompEducaGoal; i++)
-            {
+            for (int i = 0; i < nbCompEducaGoal; i++) {
                 //if(i == nbCompEducaGoal-1)
                 //    totalGrid.setText(0,i,"Total: " + " 900/900");
                 //else
-                    totalGrid.setText(0,i,"Comp " + (i+1) + ": " + " 300/300");
+                totalGrid.setText(0, i, "C" + (i + 1) + ": " + " 300/300");
 
-                totalGrid.getColumnFormatter().setWidth(i,"112");
+                totalGrid.getColumnFormatter().setWidth(i, "112");
+                totalGrid.getCellFormatter().getElement(0, i).getStyle().setTextAlign(Style.TextAlign.CENTER);
             }
 
             totalGrid.getElement().getStyle().setMarginLeft(30, PX);
@@ -146,20 +150,26 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             HorizontalPanel totalFinalDiv = new HorizontalPanel();
 
             Label totalLabel = new Label("900/900");
-            totalLabel.getElement().getStyle().setMarginLeft(20,PX);
-            totalLabel.getElement().getStyle().setMarginTop(6,PX);
-            totalLabel.getElement().getStyle().setFontSize(16,PX);
+            totalLabel.getElement().getStyle().setMarginLeft(20, PX);
+            totalLabel.getElement().getStyle().setMarginBottom(6, PX);
+            totalLabel.getElement().getStyle().setFontSize(16, PX);
             totalLabel.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
 
             totalFinalDiv.add(totalLabel);
             totalFinalDiv.add(totalGrid);
+            totalFinalDiv.getElement().getStyle().setMarginTop(10, PX);
 
             Div headerDiv = new Div();
             headerDiv.add(educGoalName);
             headerDiv.add(totalFinalDiv);
+            headerDiv.getElement().getStyle().setColor("white");
+
 
             educGoalEvaluationTable.setHeader(headerDiv);
             educGoalEvaluationTable.setContent(evaluationGrid);
+
+            educGoalEvaluationTable.getContent().getElement().getStyle().setBorderWidth(0, PX);
+            educGoalEvaluationTable.getContent().getElement().getStyle().setBorderColor("black");
 
             //educGoalDiv.add(educGoalName);
             //educGoalDiv.add(totalGrid);
@@ -168,8 +178,26 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             educationalGoalPanel.add(educGoalDiv);
         }
 
+    }
+    public void setSessionDropdown(ArrayList<String> sessionArray) {
+
+        // Make a new list box, adding a few items to it.
+        ListBox listBox1 = new ListBox();
+        listBox1.addItem("First");
+        listBox1.addItem("Second");
+        listBox1.addItem("Third");
+        listBox1.addItem("Fourth");
+        listBox1.addItem("Fifth");
 
 
+        // Make enough room for all five items
+        listBox1.setVisibleItemCount(1);
 
+        // Add listboxes to the root panel.
+        VerticalPanel panel = new VerticalPanel();
+        panel.setSpacing(10);
+        panel.add(listBox1);
+
+        sessionDropdown.add(panel);
     }
 }
