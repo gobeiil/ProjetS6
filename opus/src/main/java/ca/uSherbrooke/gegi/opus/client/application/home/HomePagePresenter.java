@@ -92,7 +92,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveAdministratedGroups(true);
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
-        dispatchAsync.execute(new GetGrading(), new AsyncCallback<GetGradingResult>() {
+        dispatchAsync.execute(new GetGrading("aubm2009"), new AsyncCallback<GetGradingResult>() {
             @Override
             public void onFailure(Throwable throwable) {
                 AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes.");
@@ -116,7 +116,6 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         sessionArray.add(3,"Session 4");
         sessionArray.add(4,"Session 5");
 
-        getView().setEducationalGoalPanel(educGoalArray);
         getView().setSessionDropdown(sessionArray);
     }
 
