@@ -20,9 +20,8 @@ import ca.uSherbrooke.gegi.opus.client.application.home.sideMenu.SideMenuPresent
 import ca.uSherbrooke.gegi.opus.client.application.home.user.UserWidgetPresenter;
 import ca.uSherbrooke.gegi.opus.client.place.NameTokens;
 
-import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
-import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGrading;
-import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGradingResult;
+import ca.uSherbrooke.gegi.opus.shared.Grading.GetGradingInfo;
+import ca.uSherbrooke.gegi.opus.shared.Grading.GradingQueryResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
 import com.google.web.bindery.event.shared.EventBus;
@@ -55,7 +54,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         public void setListGroup(List<GroupData> listGroup);
         public void clearUsers();
         public void resetView();
-        public void setEducationalGoalPanel(ArrayList<String> educGoalArray);
+        public void setEducationalGoalPanel(GradingQueryResult gradingResult);
     }
 
     @ProxyStandard
@@ -89,22 +88,15 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveAdministratedGroups(true);
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
-        dispatchAsync.execute(new GetGrading("gobb2201"), new AsyncCallback<GetGradingResult>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                AsyncCallbackFailed.asyncCallbackFailed(throwable, "La liste des usagers membres du groupe est inaccessible.");
-            }
 
-            @Override
-            public void onSuccess(GetGradingResult getGradingResult) {
-                int i = 0;
-                for (Course course: getGradingResult.getCourseArrayList()) {
-                    educGoalArray.add(i++, course.getLabel() + " - " + course.getCourseName());
-                }
-            }
-        });
+        educGoalArray.add(0,"GIF-600 - Theorie de la vie 1");
+        educGoalArray.add(1,"GIF-601 - Theorie de la vie 2");
+        educGoalArray.add(2,"GIF-602 - Theorie de la vie 3");
 
-        getView().setEducationalGoalPanel(educGoalArray);
+        GetGradingInfo getGradingInfo = new GetGradingInfo();
+        GradingQueryResult gradingQueryResult = getGradingInfo.GetGradingInfoFromCip("aubm2009");
+
+        getView().setEducationalGoalPanel(gradingQueryResult);
     }
 
     @Override
