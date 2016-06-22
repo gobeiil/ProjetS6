@@ -20,6 +20,7 @@ import ca.uSherbrooke.gegi.opus.client.application.home.sideMenu.SideMenuPresent
 import ca.uSherbrooke.gegi.opus.client.application.home.user.UserWidgetPresenter;
 import ca.uSherbrooke.gegi.opus.client.place.NameTokens;
 
+import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGradingResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
 import com.google.web.bindery.event.shared.EventBus;
@@ -135,6 +136,18 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         @Override
         public void onFailure(Throwable throwable) {
             AsyncCallbackFailed.asyncCallbackFailed(throwable, "La liste des groupes est inaccessible.");
+        }
+    };
+
+    private AsyncCallback<GetGradingResult> getGradingAsyncCallback = new AsyncCallback<GetGradingResult>() {
+        @Override
+        public void onSuccess(GetGradingResult result) {
+            ///TODO
+        }
+
+        @Override
+        public void onFailure(Throwable throwable) {
+            AsyncCallbackFailed.asyncCallbackFailed(throwable, "failed to get grades for student.");
         }
     };
 
