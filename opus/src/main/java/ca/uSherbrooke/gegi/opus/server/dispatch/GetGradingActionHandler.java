@@ -25,17 +25,17 @@ public class GetGradingActionHandler implements ActionHandler<GetGrading, GetGra
 
     @Override
     public GetGradingResult execute(GetGrading getGrading, ExecutionContext executionContext) throws ActionException {
-        /*dao.clearEntityManager();
+        dao.clearEntityManager();
 
         List<PGobject> pGobjects = (List<PGobject>) dao.getNativeResultList("Select bulletin.f_getegbystudent(\'"+ getGrading.getCip() + "\')");
         ArrayList<String> stringArrayList = new ArrayList<String>();
+        for (PGobject item :pGobjects) {
+            stringArrayList.add(item.getValue());
+        }
 
 
-        return ResultSetParser.parseGradingQuery(stringArrayList);*/
+        return ResultSetParser.parseGradingQuery(stringArrayList);
 
-        ArrayList<Course> list = new ArrayList<Course>();
-        list.add(new Course("GIF69", "test"));
-        return new GetGradingResult(list);
     }
 
     @Override

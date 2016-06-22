@@ -90,7 +90,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveAdministratedGroups(true);
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
-        dispatchAsync.execute(new GetGrading("gobb2201"), new AsyncCallback<GetGradingResult>() {
+        dispatchAsync.execute(new GetGrading(), new AsyncCallback<GetGradingResult>() {
             @Override
             public void onFailure(Throwable throwable) {
                 AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes.");

@@ -23,6 +23,7 @@ import ca.uSherbrooke.gegi.opus.client.place.NameTokens;
 import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGrading;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGradingResult;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
 import com.google.web.bindery.event.shared.EventBus;
@@ -100,11 +101,11 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
                 int i = 0;
                 for (Course course: getGradingResult.getCourseArrayList()) {
                     educGoalArray.add(i++, course.getLabel() + " - " + course.getCourseName());
+                    GWT.log(course.getLabel());
                 }
+                getView().setEducationalGoalPanel(educGoalArray);
             }
         });
-
-        getView().setEducationalGoalPanel(educGoalArray);
     }
 
     @Override
