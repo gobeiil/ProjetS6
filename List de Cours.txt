@@ -1,0 +1,7 @@
+List de Cour
+
+Cour:
+ - Type
+ - Educational Goal
+ - Label
+ - Text
