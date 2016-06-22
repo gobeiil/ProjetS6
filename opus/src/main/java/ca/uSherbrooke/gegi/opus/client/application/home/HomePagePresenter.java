@@ -151,6 +151,18 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         }
     };
 
+    private AsyncCallback<GetGradingResult> getGradingAsyncCallback = new AsyncCallback<GetGradingResult>() {
+        @Override
+        public void onSuccess(GetGradingResult result) {
+            ///TODO
+        }
+
+        @Override
+        public void onFailure(Throwable throwable) {
+            AsyncCallbackFailed.asyncCallbackFailed(throwable, "failed to get grades for student.");
+        }
+    };
+
     private AsyncCallback<GetUsersResult> getIndirectUsersResultAsyncCallback = new AsyncCallback<GetUsersResult>() {
         @Override
         public void onSuccess (GetUsersResult result){
