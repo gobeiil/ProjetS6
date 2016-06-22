@@ -10,14 +10,14 @@ import static ca.uSherbrooke.gegi.opus.server.GradingDatabase.ResultSetParser.pa
  * Created by ben_g on 2016-06-22.
  */
 public class GradingQueryExecution {
-    public GradingQueryResult getCoursesFromCip(String cip)
+   /* public GradingQueryResult getCoursesFromCip(String cip)
     {
         GradingQueryResult result = null;
         try {
             Connection connection = DriverManager.getConnection("jdbc:postgresql:opus", "appopus", "appopus");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("Select bulletin.f_getegbystudent(\'"+ cip + "\')");
-            result = ResultSetParser.parseGradingQuery(cip,resultSet);
+            result = ResultSetParser.parseGradingQuery(resultSet);
 
             connection.close();
             statement.close();
@@ -28,6 +28,6 @@ public class GradingQueryExecution {
             return result;
         }
         return result;
-    }
+    }*/
 
 }

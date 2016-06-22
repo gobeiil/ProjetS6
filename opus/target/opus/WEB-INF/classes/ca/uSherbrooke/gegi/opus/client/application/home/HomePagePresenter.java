@@ -20,6 +20,9 @@ import ca.uSherbrooke.gegi.opus.client.application.home.sideMenu.SideMenuPresent
 import ca.uSherbrooke.gegi.opus.client.application.home.user.UserWidgetPresenter;
 import ca.uSherbrooke.gegi.opus.client.place.NameTokens;
 
+import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
+import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGrading;
+import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGradingResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
 import com.google.web.bindery.event.shared.EventBus;
@@ -43,6 +46,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
     public static final Slot SLOT_USERS = new Slot();
     public final IndirectProvider<UserWidgetPresenter> provider;
     private List<UserData> listUser;
+    public static ArrayList<String> educGoalArray = new ArrayList<>();
 
     @Inject DispatchAsync dispatchAsync;
     @Inject SideMenuPresenter sideMenuPresenter;
@@ -51,6 +55,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         public void setListGroup(List<GroupData> listGroup);
         public void clearUsers();
         public void resetView();
+        public void setEducationalGoalPanel(ArrayList<String> educGoalArray);
     }
 
     @ProxyStandard
@@ -84,6 +89,22 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveAdministratedGroups(true);
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
+        dispatchAsync.execute(new GetGrading("gobb2201"), new AsyncCallback<GetGradingResult>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                AsyncCallbackFailed.asyncCallbackFailed(throwable, "La liste des usagers membres du groupe est inaccessible.");
+            }
+
+            @Override
+            public void onSuccess(GetGradingResult getGradingResult) {
+                int i = 0;
+                for (Course course: getGradingResult.getCourseArrayList()) {
+                    educGoalArray.add(i++, course.getLabel() + " - " + course.getCourseName());
+                }
+            }
+        });
+
+        getView().setEducationalGoalPanel(educGoalArray);
     }
 
     @Override
@@ -135,6 +156,18 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         @Override
         public void onFailure(Throwable throwable) {
             AsyncCallbackFailed.asyncCallbackFailed(throwable, "La liste des groupes est inaccessible.");
+        }
+    };
+
+    private AsyncCallback<GetGradingResult> getGradingAsyncCallback = new AsyncCallback<GetGradingResult>() {
+        @Override
+        public void onSuccess(GetGradingResult result) {
+            ///TODO
+        }
+
+        @Override
+        public void onFailure(Throwable throwable) {
+            AsyncCallbackFailed.asyncCallbackFailed(throwable, "failed to get grades for student.");
         }
     };
 
