@@ -2,10 +2,15 @@
 --        Script Postgre 
 ------------------------------------------------------------
 CREATE SCHEMA bulletin
-  AUTHORIZATION opus;
+  AUTHORIZATION postgres;
 
 COMMENT ON SCHEMA bulletin
   IS 'Fonctions et tables personnalise pour le module bulletin';
+
+------------------------------------------------------------
+--        Script Postgre 
+------------------------------------------------------------
+
 
 
 ------------------------------------------------------------
@@ -128,6 +133,17 @@ CREATE TABLE bulletin.corrected_copy(
 
 
 ------------------------------------------------------------
+-- Table: competence
+------------------------------------------------------------
+CREATE TABLE bulletin.competence(
+	competence_id SERIAL NOT NULL ,
+	label         VARCHAR (25)  ,
+	eg_id         INT   ,
+	CONSTRAINT prk_constraint_competence PRIMARY KEY (competence_id)
+)WITHOUT OIDS;
+
+
+------------------------------------------------------------
 -- Table: educational_goal_evaluation
 ------------------------------------------------------------
 CREATE TABLE bulletin.educational_goal_evaluation(
@@ -164,14 +180,13 @@ ALTER TABLE bulletin.criterion ADD CONSTRAINT FK_criterion_rubric_id FOREIGN KEY
 ALTER TABLE bulletin.criterion ADD CONSTRAINT FK_criterion_corrected_copy_id FOREIGN KEY (corrected_copy_id) REFERENCES bulletin.corrected_copy(corrected_copy_id);
 ALTER TABLE bulletin.rubric ADD CONSTRAINT FK_rubric_eval_id FOREIGN KEY (eval_id) REFERENCES bulletin.evaluation_mix(eval_id);
 ALTER TABLE bulletin.corrected_copy ADD CONSTRAINT FK_corrected_copy_eval_id FOREIGN KEY (eval_id) REFERENCES bulletin.evaluation_mix(eval_id);
+ALTER TABLE bulletin.competence ADD CONSTRAINT FK_competence_eg_id FOREIGN KEY (eg_id) REFERENCES bulletin.educational_goal_mix(eg_id);
 ALTER TABLE bulletin.educational_goal_evaluation ADD CONSTRAINT FK_educational_goal_evaluation_eval_id FOREIGN KEY (eval_id) REFERENCES bulletin.evaluation_mix(eval_id);
 ALTER TABLE bulletin.educational_goal_evaluation ADD CONSTRAINT FK_educational_goal_evaluation_eg_id FOREIGN KEY (eg_id) REFERENCES bulletin.educational_goal_mix(eg_id);
 ALTER TABLE bulletin.student_corrected_copy ADD CONSTRAINT FK_student_corrected_copy_user_id FOREIGN KEY (user_id) REFERENCES bulletin.student(user_id);
 ALTER TABLE bulletin.student_corrected_copy ADD CONSTRAINT FK_student_corrected_copy_corrected_copy_id FOREIGN KEY (corrected_copy_id) REFERENCES bulletin.corrected_copy(corrected_copy_id);
 ALTER TABLE bulletin.student_score ADD CONSTRAINT FK_student_score_user_id FOREIGN KEY (user_id) REFERENCES bulletin.student(user_id);
 ALTER TABLE bulletin.student_score ADD CONSTRAINT FK_student_score_eg_id FOREIGN KEY (eg_id) REFERENCES bulletin.educational_goal_mix(eg_id);
-
-
 
 
 
@@ -207,18 +222,6 @@ VALUES (1,'elsf2301');
 INSERT INTO bulletin.student (user_id,student_id) 
 VALUES (2,'fria1501');
 
-INSERT INTO bulletin.student (user_id,student_id) 
-VALUES (3,'gobb2201');
-
-INSERT INTO bulletin.student (user_id,student_id) 
-VALUES (4,'cotg1906');
-
-INSERT INTO bulletin.student (user_id,student_id) 
-VALUES (5,'tabj2001');
-
-INSERT INTO bulletin.student (user_id,student_id) 
-VALUES (6,'aubm2009');
-
 -----------STUDENT SCORE (Assign eg_id to student_id--------------
 INSERT INTO bulletin.student_score (user_id,eg_id) 
 VALUES (1,1);
@@ -230,14 +233,50 @@ INSERT INTO bulletin.student_score (user_id,eg_id)
 VALUES (2,1);
 INSERT INTO bulletin.student_score (user_id,eg_id) 
 VALUES (2,2);
-INSERT INTO bulletin.student_score (user_id,eg_id) 
-VALUES (3,1);
-INSERT INTO bulletin.student_score (user_id,eg_id) 
-VALUES (3,2);
-INSERT INTO bulletin.student_score (user_id,eg_id) 
-VALUES (3,3);
 
+----------EVALUATION_TYPE--------------
+INSERT INTO bulletin.evaluation_type (evaluation_type_id,label) 
+VALUES (1,'examen');
+INSERT INTO bulletin.evaluation_type (evaluation_type_id,label) 
+VALUES (2,'validation');
+INSERT INTO bulletin.evaluation_type (evaluation_type_id,label) 
+VALUES (3,'rapport');
+INSERT INTO bulletin.evaluation_type (evaluation_type_id,label) 
+VALUES (4,'laboratoire');
 
+----------EVALUATION_MIX--------------
+INSERT INTO bulletin.evaluation_mix (eval_id,visible,label,type,occurrence,evaluation_type_id) 
+VALUES (1,TRUE,'examen GIF501',1,now(),1);
+INSERT INTO bulletin.evaluation_mix (eval_id,visible,label,type,occurrence,evaluation_type_id) 
+VALUES (2,TRUE,'rapport GIF501',1,now(),3);
+
+-----------RUBRIC---------------------
+INSERT INTO bulletin.rubric (rubric_id,label,eval_id) 
+VALUES (1,'Question 1', 1);
+INSERT INTO bulletin.rubric (rubric_id,label,eval_id) 
+VALUES (2,'Question 2', 1);
+
+-----------CORRECTED_COPY---------------------
+INSERT INTO bulletin.corrected_copy (corrected_copy_id,eval_id) 
+VALUES (1,1);
+INSERT INTO bulletin.corrected_copy (corrected_copy_id,eval_id) 
+VALUES (2,2);
+
+-----------CRITERION---------------------
+INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id) 
+VALUES (1,'Resultat A',10,100,1,1,'Pointage resultat A',1);
+INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id) 
+VALUES (2,'Demarche A',10,100,1,1,'Pointage demarche A',1);
+INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id) 
+VALUES (3,'Resultat B',10,100,1,1,'Pointage du B',1);
+
+----------COMPETENCE--------------
+INSERT INTO bulletin.competence (competence_id,label,eg_id) 
+VALUES (1,'C1 GIF 501',2);
+INSERT INTO bulletin.competence (competence_id,label,eg_id) 
+VALUES (2,'C2 GIF 501',2);
+INSERT INTO bulletin.competence (competence_id,label,eg_id) 
+VALUES (3,'C3 GIF 501',2);
 --------------------------------------VIEW-----------------------------------------
 -----------------------------------------------------------------------------------
 
@@ -254,19 +293,40 @@ FROM
 WHERE 
   bulletin.student.user_id = bulletin.student_score.user_id AND
   bulletin.student_score.eg_id = bulletin.educational_goal_mix.eg_id;
+  
+--view montrant les competence d'un ap d'un etudiant
+ CREATE VIEW bulletin.v_competence_students_eg (student_id, eg_id, label_eg, competence_id, label_comp)
+ AS
+ SELECT
+  bulletin.student.student_id,
+  bulletin.educational_goal_mix.eg_id,
+  bulletin.educational_goal_mix.label,
+  bulletin.competence.competence_id,
+  bulletin.competence.label
+ FROM
+  bulletin.student, 
+  bulletin.educational_goal_mix,
+  bulletin.competence,
+  bulletin.student_score
+ WHERE
+  bulletin.student.user_id = bulletin.student_score.user_id AND
+  bulletin.student_score.eg_id = bulletin.educational_goal_mix.eg_id AND
+  bulletin.educational_goal_mix.eg_id = bulletin.competence.eg_id;
+ 
 
 
 --------------------------------------TYPE RETOUR----------------------------------
 -----------------------------------------------------------------------------------
 
 -- type de var: retour de function f_getEgByStudent, store educational_goal(Activite pedag.) pour 1 student
-CREATE TYPE bulletin.t_eg_student_results AS (label VARCHAR(25),description VARCHAR(25));
+CREATE TYPE t_eg_student_results AS (label VARCHAR(25),description VARCHAR(25));
+CREATE TYPE t_competence_eg_student AS (label_comp VARCHAR(25), eg VARCHAR(25));
 
 --------------------------------------FUNCTIONS------------------------------------
 -----------------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION bulletin.f_getEgByStudent(
-in cip student.student_id%TYPE)
+in cip bulletin.student.student_id%TYPE)
 RETURNS SETOF t_eg_student_results AS
 $BODY$
 DECLARE
@@ -278,4 +338,21 @@ BEGIN
         RETURN query EXECUTE query;
 END;
 $BODY$
-LANGUAGE plpgsql
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION bulletin.f_getCompByEgByStudent(
+in cip bulletin.student.student_id%TYPE)
+RETURNS SETOF t_competence_eg_student AS
+$BODY$
+DECLARE
+query text;
+
+BEGIN
+	query := 'SELECT label_eg, label_comp
+		  FROM bulletin.v_competence_students_eg WHERE student_id = ''' || cip || '''';
+        RETURN query EXECUTE query;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
