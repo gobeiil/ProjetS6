@@ -21,7 +21,7 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
     public GetSessionGradingResult execute(GetSessionGrading getSessionGrading, ExecutionContext executionContext) throws ActionException {
         GetSessionGradingResult result = new GetSessionGradingResult();
         SessionGrading sessionGrading = new SessionGrading();
-        sessionGrading.setCip("gobb2201");
+        sessionGrading.setCip("aubm2009");
         sessionGrading.setSession("S6");
 
         AP ap1 = new AP();

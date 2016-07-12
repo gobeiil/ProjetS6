@@ -6,7 +6,9 @@
 package ca.uSherbrooke.gegi.opus.client.application.home;
 
 import ca.uSherbrooke.gegi.commons.core.shared.entity.GroupData;
+import ca.uSherbrooke.gegi.opus.shared.Grading.AP;
 import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
+import ca.uSherbrooke.gegi.opus.shared.Grading.SessionGrading;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.ListBox;
@@ -79,10 +81,11 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
     public void clearUsers(){ panelUsers.clear(); }
 
-    public void setEducationalGoalPanel(ArrayList<String> educationalGoalArray){
-        GWT.log(educationalGoalArray.get(0));
-        for (String item: educationalGoalArray) {
-            GWT.log(item);
+    public void setEducationalGoalPanel(SessionGrading educationalGoalArray){
+
+
+
+        for (AP item: educationalGoalArray.getAPList()) {
             int nbCompEducaGoal = 3;
             int nbEvaluationEducaGoal = 3;
 
@@ -93,7 +96,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             //educGoalDiv.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
             //educGoalDiv.getElement().getStyle().setBorderWidth(2, PX);
 
-            Label educGoalName = new Label(item);
+            Label educGoalName = new Label(item.getLabel() + "-" + item.getCourseName());
             educGoalName.getElement().getStyle().setPaddingTop(4, PX);
             educGoalName.getElement().getStyle().setBackgroundColor("#2D9D5F");
             educGoalName.getElement().getStyle().setFontSize(16, PX);

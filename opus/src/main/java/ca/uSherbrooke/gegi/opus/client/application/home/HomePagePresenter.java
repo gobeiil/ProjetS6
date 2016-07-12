@@ -21,8 +21,11 @@ import ca.uSherbrooke.gegi.opus.client.application.home.user.UserWidgetPresenter
 import ca.uSherbrooke.gegi.opus.client.place.NameTokens;
 
 import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
+import ca.uSherbrooke.gegi.opus.shared.Grading.SessionGrading;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGrading;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGradingResult;
+import ca.uSherbrooke.gegi.opus.shared.dispatch.GetSessionGrading;
+import ca.uSherbrooke.gegi.opus.shared.dispatch.GetSessionGradingResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
@@ -57,7 +60,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         public void setListGroup(List<GroupData> listGroup);
         public void clearUsers();
         public void resetView();
-        public void setEducationalGoalPanel(ArrayList<String> educGoalArray);
+        public void setEducationalGoalPanel(SessionGrading sessionGrading);
         public void setSessionDropdown(ArrayList<String> sessionArray);
     }
 
@@ -106,7 +109,23 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
                     educGoalArray.add(i++, course.getLabel() + " - " + course.getCourseName());
                     GWT.log(course.getLabel());
                 }
-                getView().setEducationalGoalPanel(educGoalArray);
+
+                dispatchAsync.execute(new GetSessionGrading("S6", "aubm2009"), new AsyncCallback<GetSessionGradingResult>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes 222.");
+                    }
+
+                    @Override
+                    public void onSuccess(GetSessionGradingResult getSessionGradingResult) {
+
+                        int j = 0;
+
+                        SessionGrading sessionGrading = getSessionGradingResult.getSessionGrading();
+
+                        getView().setEducationalGoalPanel(sessionGrading);
+                    }
+                });
             }
         });
 

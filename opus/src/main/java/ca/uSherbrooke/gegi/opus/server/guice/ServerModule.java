@@ -7,8 +7,10 @@ package ca.uSherbrooke.gegi.opus.server.guice;
 
 import ca.uSherbrooke.gegi.opus.server.dispatch.DeleteUserActionHandler;
 import ca.uSherbrooke.gegi.opus.server.dispatch.GetGradingActionHandler;
+import ca.uSherbrooke.gegi.opus.server.dispatch.GetSessionGradingActionHandler;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.DeleteUser;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGrading;
+import ca.uSherbrooke.gegi.opus.shared.dispatch.GetSessionGrading;
 import com.gwtplatform.dispatch.rpc.server.guice.HandlerModule;
 
 public class ServerModule extends HandlerModule {
@@ -16,5 +18,6 @@ public class ServerModule extends HandlerModule {
     protected void configureHandlers() {
         bindHandler(DeleteUser.class, DeleteUserActionHandler.class);
         bindHandler(GetGrading.class, GetGradingActionHandler.class);
+        bindHandler(GetSessionGrading.class, GetSessionGradingActionHandler.class);
     }
 }
