@@ -111,7 +111,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         //        }
         //    }
         //});
-        
+
         dispatchAsync.execute(new GetSessionGrading("S6", "aubm2009"), new AsyncCallback<GetSessionGradingResult>() {
             @Override
             public void onFailure(Throwable throwable) {

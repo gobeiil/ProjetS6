@@ -6,9 +6,7 @@
 package ca.uSherbrooke.gegi.opus.client.application.home;
 
 import ca.uSherbrooke.gegi.commons.core.shared.entity.GroupData;
-import ca.uSherbrooke.gegi.opus.shared.Grading.AP;
-import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
-import ca.uSherbrooke.gegi.opus.shared.Grading.SessionGrading;
+import ca.uSherbrooke.gegi.opus.shared.Grading.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.ListBox;
@@ -88,7 +86,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
         for (AP item: educationalGoalArray.getAPList()) {
             int nbCompEducaGoal = 3;
-            int nbEvaluationEducaGoal = 3;
+            //int nbEvaluationEducaGoal = 3;
 
             Div educGoalDiv = new Div();
             educGoalDiv.getElement().getStyle().setBackgroundColor("#FFFFFF");
@@ -114,7 +112,10 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
             //educGoalEvaluationTable.setHeader(new Label("\u25B8" + " " + item));
 
-            Grid evaluationGrid = new Grid(nbEvaluationEducaGoal, nbCompEducaGoal + 1);
+            ArrayList<Travail> travailList = item.getTravails();
+
+
+            Grid evaluationGrid = new Grid(travailList.size(), nbCompEducaGoal + 1);
             evaluationGrid.setBorderWidth(1);
 
 
@@ -122,27 +123,44 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
                 evaluationGrid.getColumnFormatter().setWidth(i, "112");
             }
 
-            for (int j = 0; j < nbEvaluationEducaGoal; j++) {
-                evaluationGrid.setText(j, 0, "Travail " + (j + 1));
+            //Grille de note
+            for (int j = 0; j < travailList.size(); j++) {
+                Travail travail = travailList.get(j);
+                ArrayList<BoxScore> boxScores = travail.getBoxScoreArrayList();
+                evaluationGrid.setText(j, 0, travail.getName());
 
-                for (int k = 1; k <= nbCompEducaGoal; k++) {
+                for (int k = 1; k <= boxScores.size(); k++) {
+                    BoxScore boxScore = boxScores.get(k-1);
                     evaluationGrid.getCellFormatter().getElement(j, k).getStyle().setTextAlign(Style.TextAlign.CENTER);
 
                     String tooltipString = new String();
-                    tooltipString = "Moyenne: 90 | Ecart-Type: 6";
+                    tooltipString = "Moyenne: " + boxScore.getAverage() + "| Ecart-Type: " + boxScore.getStandardDeviation();
 
                     Tooltip tooltip = new Tooltip();
 
                     tooltip.setTitle(tooltipString);
-                    tooltip.setWidget(new Label("100/100"));
+                    tooltip.setWidget(new Label(boxScore.getGrade() + "/" + boxScore.getPonderation()));
 
                     evaluationGrid.setWidget(j,k,tooltip);
                 }
+
+                /*evaluationGrid.getCellFormatter().getElement(j, boxScores.size()).getStyle().setTextAlign(Style.TextAlign.CENTER);
+
+                String tooltipString = new String();
+                tooltipString = "Moyenne: 250 | Ecart-Type: 25";
+
+                Tooltip tooltip = new Tooltip();
+
+                tooltip.setTitle(tooltipString);
+                tooltip.setWidget(new Label("300/300"));
+
+                evaluationGrid.setWidget(j,boxScores.size(),tooltip);*/
             }
 
             Grid totalGrid = new Grid(1, nbCompEducaGoal);
             totalGrid.setBorderWidth(1);
 
+            //Grille de competence
             for (int i = 0; i < nbCompEducaGoal; i++) {
                 //if(i == nbCompEducaGoal-1)
                 //    totalGrid.setText(0,i,"Total: " + " 900/900");
