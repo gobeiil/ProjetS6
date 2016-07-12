@@ -10,6 +10,7 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 
 /**
@@ -35,9 +36,17 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
         Travail travail11 = new Travail();
         travail11.setName("Rapport");
 
+        Travail travail12 = new Travail();
+        travail12.setName("Examen");
+
         BoxScore boxScore1 = new BoxScore(1, 30, 50, 25, 3);
         BoxScore boxScore2 = new BoxScore(2, 25, 50, 30, 2);
         BoxScore boxScore3 = new BoxScore(3, 45, 50, 40, 6);
+
+        BoxScore boxScore4 = new BoxScore(1, -1, 50, -1, -1);
+        BoxScore boxScore5 = new BoxScore(2, -1, 50, -1, -1);
+        BoxScore boxScore6 = new BoxScore(3, -1, 50, -1, -1);
+
 
         ArrayList<BoxScore> boxScores = new ArrayList<BoxScore>();
 
@@ -45,8 +54,14 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
         boxScores.add(boxScore2);
         boxScores.add(boxScore3);
 
-        travail11.setBoxScoreArrayList(boxScores);
+        ArrayList<BoxScore> boxScores2 = new ArrayList<BoxScore>();
 
+        boxScores2.add(boxScore4);
+        boxScores2.add(boxScore5);
+        boxScores2.add(boxScore6);
+
+        travail11.setBoxScoreArrayList(boxScores);
+        travail12.setBoxScoreArrayList(boxScores2);
 
         Travail travail21 = new Travail();
         travail21.setBoxScoreArrayList(boxScores);
@@ -58,6 +73,7 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
 
         ArrayList<Travail> travails1 = new ArrayList<Travail>();
         travails1.add(travail11);
+        travails1.add(travail12);
         ap1.setTravails(travails1);
 
         ArrayList<Travail> travails2 = new ArrayList<Travail>();

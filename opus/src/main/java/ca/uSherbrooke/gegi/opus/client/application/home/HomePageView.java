@@ -109,9 +109,6 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             educGoalEvaluationTable.getElement().getStyle().setBorderWidth(0.5, PX);
             educGoalEvaluationTable.getElement().getStyle().setBorderColor("#000000");
 
-
-            //educGoalEvaluationTable.setHeader(new Label("\u25B8" + " " + item));
-
             ArrayList<Travail> travailList = item.getTravails();
 
 
@@ -133,28 +130,34 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
                     BoxScore boxScore = boxScores.get(k-1);
                     evaluationGrid.getCellFormatter().getElement(j, k).getStyle().setTextAlign(Style.TextAlign.CENTER);
 
-                    String tooltipString = new String();
-                    tooltipString = "Moyenne: " + boxScore.getAverage() + "| Ecart-Type: " + boxScore.getStandardDeviation();
+                    if(boxScore.getAverage() == -1) {
+                        evaluationGrid.getCellFormatter().getElement(j, k).getStyle().setColor("#a6a6a6");
+                        evaluationGrid.setText(j, k, " " + boxScore.getPonderation());
+                    }
+                    else {
+                        String tooltipString = new String();
+                        tooltipString = "Moyenne: " + boxScore.getAverage() + "| Ecart-Type: " + boxScore.getStandardDeviation();
 
-                    Tooltip tooltip = new Tooltip();
+                        Tooltip tooltip = new Tooltip();
 
-                    tooltip.setTitle(tooltipString);
-                    tooltip.setWidget(new Label(boxScore.getGrade() + "/" + boxScore.getPonderation()));
+                        tooltip.setTitle(tooltipString);
+                        tooltip.setWidget(new Label(boxScore.getGrade() + "/" + boxScore.getPonderation()));
 
-                    evaluationGrid.setWidget(j,k,tooltip);
+                        evaluationGrid.setWidget(j, k, tooltip);
+                    }
                 }
 
-                /*evaluationGrid.getCellFormatter().getElement(j, boxScores.size()).getStyle().setTextAlign(Style.TextAlign.CENTER);
+                /*evaluationGrid.getCellFormatter().getElement(j, boxScores.size() + 1).getStyle().setTextAlign(Style.TextAlign.CENTER);
 
                 String tooltipString = new String();
-                tooltipString = "Moyenne: 250 | Ecart-Type: 25";
+                tooltipString = "Moyenne: 95 | Ecart-Type: 11";
 
                 Tooltip tooltip = new Tooltip();
 
                 tooltip.setTitle(tooltipString);
-                tooltip.setWidget(new Label("300/300"));
+                tooltip.setWidget(new Label("100/150"));
 
-                evaluationGrid.setWidget(j,boxScores.size(),tooltip);*/
+                evaluationGrid.setWidget(j,boxScores.size() + 1,tooltip);*/
             }
 
             Grid totalGrid = new Grid(1, nbCompEducaGoal);
@@ -162,17 +165,21 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
             //Grille de competence
             for (int i = 0; i < nbCompEducaGoal; i++) {
-                //if(i == nbCompEducaGoal-1)
-                //    totalGrid.setText(0,i,"Total: " + " 900/900");
-                //else
-                totalGrid.setText(0, i, "C" + (i + 1) + ": " + " 300/300");
-
                 totalGrid.getColumnFormatter().setWidth(i, "112");
                 totalGrid.getCellFormatter().getElement(0, i).getStyle().setTextAlign(Style.TextAlign.CENTER);
+
+                String tooltipString = new String();
+                tooltipString = "Moyenne: 250 | Ecart-Type: 25";
+
+                Tooltip tooltip = new Tooltip();
+
+                tooltip.setTitle(tooltipString);
+                tooltip.setWidget(new Label("C" + (i + 1) + ": " + " 300/300"));
+
+                totalGrid.setWidget(0,i,tooltip);
             }
 
             totalGrid.getElement().getStyle().setMarginLeft(30, PX);
-
 
             HorizontalPanel totalFinalDiv = new HorizontalPanel();
 
@@ -182,7 +189,15 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             totalLabel.getElement().getStyle().setFontSize(16, PX);
             totalLabel.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
 
-            totalFinalDiv.add(totalLabel);
+            String tooltipStringTotal = new String();
+            tooltipStringTotal = "Moyenne: 850 | Ecart-Type: 25";
+
+            Tooltip tooltipTotal = new Tooltip();
+
+            tooltipTotal.setTitle(tooltipStringTotal);
+            tooltipTotal.setWidget(totalLabel);
+
+            totalFinalDiv.add(tooltipTotal);
             totalFinalDiv.add(totalGrid);
             totalFinalDiv.getElement().getStyle().setMarginTop(10, PX);
 
@@ -190,7 +205,6 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             headerDiv.add(educGoalName);
             headerDiv.add(totalFinalDiv);
             headerDiv.getElement().getStyle().setColor("white");
-
 
             educGoalEvaluationTable.setHeader(headerDiv);
             educGoalEvaluationTable.setContent(evaluationGrid);
