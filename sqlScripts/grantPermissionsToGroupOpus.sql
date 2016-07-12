@@ -11,3 +11,6 @@ GRANT ALL ON TABLE bulletin.student_corrected_copy TO GROUP opus;
 GRANT ALL ON TABLE bulletin.student_score TO GROUP opus;
 GRANT ALL ON TABLE bulletin.timespan TO GROUP opus;
 GRANT ALL ON TABLE bulletin.tuiles TO GROUP opus;
+GRANT ALL ON TABLE bulletin.v_students_eg TO GROUP opus;
+GRANT ALL ON TABLE bulletin.v_competence_students_eg TO GROUP opus;
+GRANT ALL ON TABLE bulletin.v_travaux_students_eg TO GROUP opus;
