@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Tooltip;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.html.Div;
 
@@ -125,12 +126,17 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
                 evaluationGrid.setText(j, 0, "Travail " + (j + 1));
 
                 for (int k = 1; k <= nbCompEducaGoal; k++) {
-                    //if(k == nbCompEducaGoal)
-                    //    evaluationGrid.setText(j,k,"300/300");
-                    //else
-                    evaluationGrid.setText(j, k, "100/100");
-
                     evaluationGrid.getCellFormatter().getElement(j, k).getStyle().setTextAlign(Style.TextAlign.CENTER);
+
+                    String tooltipString = new String();
+                    tooltipString = "Moyenne: 90 | Ecart-Type: 6";
+
+                    Tooltip tooltip = new Tooltip();
+
+                    tooltip.setTitle(tooltipString);
+                    tooltip.setWidget(new Label("100/100"));
+
+                    evaluationGrid.setWidget(j,k,tooltip);
                 }
             }
 
