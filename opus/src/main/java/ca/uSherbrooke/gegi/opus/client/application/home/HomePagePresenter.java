@@ -95,37 +95,37 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveAdministratedGroups(true);
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
-        dispatchAsync.execute(new GetGrading("aubm2009"), new AsyncCallback<GetGradingResult>() {
+        //dispatchAsync.execute(new GetGrading("aubm2009"), new AsyncCallback<GetGradingResult>() {
+        //    @Override
+        //    public void onFailure(Throwable throwable) {
+        //        AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes.");
+        //    }
+        //
+        //
+        //    @Override
+        //    public void onSuccess(GetGradingResult getGradingResult) {
+        //        int i = 0;
+        //        for (Course course: getGradingResult.getCourseArrayList()) {
+        //            educGoalArray.add(i++, course.getLabel() + " - " + course.getCourseName());
+        //            GWT.log(course.getLabel());
+        //        }
+        //    }
+        //});
+        
+        dispatchAsync.execute(new GetSessionGrading("S6", "aubm2009"), new AsyncCallback<GetSessionGradingResult>() {
             @Override
             public void onFailure(Throwable throwable) {
-                AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes.");
+                AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes 222.");
             }
 
-
             @Override
-            public void onSuccess(GetGradingResult getGradingResult) {
-                int i = 0;
-                for (Course course: getGradingResult.getCourseArrayList()) {
-                    educGoalArray.add(i++, course.getLabel() + " - " + course.getCourseName());
-                    GWT.log(course.getLabel());
-                }
+            public void onSuccess(GetSessionGradingResult getSessionGradingResult) {
 
-                dispatchAsync.execute(new GetSessionGrading("S6", "aubm2009"), new AsyncCallback<GetSessionGradingResult>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes 222.");
-                    }
+                int j = 0;
 
-                    @Override
-                    public void onSuccess(GetSessionGradingResult getSessionGradingResult) {
+                SessionGrading sessionGrading = getSessionGradingResult.getSessionGrading();
 
-                        int j = 0;
-
-                        SessionGrading sessionGrading = getSessionGradingResult.getSessionGrading();
-
-                        getView().setEducationalGoalPanel(sessionGrading);
-                    }
-                });
+                getView().setEducationalGoalPanel(sessionGrading);
             }
         });
 
