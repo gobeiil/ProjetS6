@@ -7,8 +7,8 @@ import java.io.Serializable;
  * Created by ben_g on 2016-06-22.
  */
 public class Course implements Serializable{
-    private String label;
-    private String courseName;
+    protected String label;
+    protected String courseName;
 
     public Course()
     {
