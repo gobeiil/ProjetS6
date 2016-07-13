@@ -1,4 +1,4 @@
-﻿------------------------------------------------------------
+------------------------------------------------------------
 --        Script Postgre 
 ------------------------------------------------------------
 CREATE SCHEMA bulletin
@@ -6,7 +6,6 @@ CREATE SCHEMA bulletin
 
 COMMENT ON SCHEMA bulletin
   IS 'Fonctions et tables personnalise pour le module bulletin';
-
 ------------------------------------------------------------
 --        Script Postgre 
 ------------------------------------------------------------
@@ -74,6 +73,7 @@ CREATE TABLE bulletin.criterion(
 	value             DOUBLE PRECISION   ,
 	NT_comment        VARCHAR (25)  ,
 	corrected_copy_id INT   ,
+	competence_id     INT   ,
 	CONSTRAINT prk_constraint_criterion PRIMARY KEY (criterion_id)
 )WITHOUT OIDS;
 
@@ -178,6 +178,7 @@ ALTER TABLE bulletin.educational_goal_mix ADD CONSTRAINT FK_educational_goal_mix
 ALTER TABLE bulletin.evaluation_mix ADD CONSTRAINT FK_evaluation_mix_evaluation_type_id FOREIGN KEY (evaluation_type_id) REFERENCES bulletin.evaluation_type(evaluation_type_id);
 ALTER TABLE bulletin.criterion ADD CONSTRAINT FK_criterion_rubric_id FOREIGN KEY (rubric_id) REFERENCES bulletin.rubric(rubric_id);
 ALTER TABLE bulletin.criterion ADD CONSTRAINT FK_criterion_corrected_copy_id FOREIGN KEY (corrected_copy_id) REFERENCES bulletin.corrected_copy(corrected_copy_id);
+ALTER TABLE bulletin.criterion ADD CONSTRAINT FK_criterion_competence_id FOREIGN KEY (competence_id) REFERENCES bulletin.competence(competence_id);
 ALTER TABLE bulletin.rubric ADD CONSTRAINT FK_rubric_eval_id FOREIGN KEY (eval_id) REFERENCES bulletin.evaluation_mix(eval_id);
 ALTER TABLE bulletin.corrected_copy ADD CONSTRAINT FK_corrected_copy_eval_id FOREIGN KEY (eval_id) REFERENCES bulletin.evaluation_mix(eval_id);
 ALTER TABLE bulletin.competence ADD CONSTRAINT FK_competence_eg_id FOREIGN KEY (eg_id) REFERENCES bulletin.educational_goal_mix(eg_id);
@@ -187,7 +188,6 @@ ALTER TABLE bulletin.student_corrected_copy ADD CONSTRAINT FK_student_corrected_
 ALTER TABLE bulletin.student_corrected_copy ADD CONSTRAINT FK_student_corrected_copy_corrected_copy_id FOREIGN KEY (corrected_copy_id) REFERENCES bulletin.corrected_copy(corrected_copy_id);
 ALTER TABLE bulletin.student_score ADD CONSTRAINT FK_student_score_user_id FOREIGN KEY (user_id) REFERENCES bulletin.student(user_id);
 ALTER TABLE bulletin.student_score ADD CONSTRAINT FK_student_score_eg_id FOREIGN KEY (eg_id) REFERENCES bulletin.educational_goal_mix(eg_id);
-
 
 
 --------------------------------------INSERTS--------------------------------------
@@ -262,6 +262,8 @@ INSERT INTO bulletin.rubric (rubric_id,label,eval_id)
 VALUES (1,'Question 1', 1);
 INSERT INTO bulletin.rubric (rubric_id,label,eval_id) 
 VALUES (2,'Question 2', 1);
+INSERT INTO bulletin.rubric (rubric_id,label,eval_id) 
+VALUES (3,'Resolution problematique', 2);
 
 -----------CORRECTED_COPY---------------------
 INSERT INTO bulletin.corrected_copy (corrected_copy_id,eval_id) 
@@ -269,13 +271,11 @@ VALUES (1,1);
 INSERT INTO bulletin.corrected_copy (corrected_copy_id,eval_id) 
 VALUES (2,2);
 
------------CRITERION---------------------
-INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id) 
-VALUES (1,'Resultat A',10,100,1,1,'Pointage resultat A',1);
-INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id) 
-VALUES (2,'Demarche A',10,100,1,1,'Pointage demarche A',1);
-INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id) 
-VALUES (3,'Resultat B',10,100,1,1,'Pointage du B',1);
+-----------STUDENT_CORRECTED_COPY-------------
+INSERT INTO bulletin.student_corrected_copy (user_id,corrected_copy_id) 
+VALUES (1,1);
+INSERT INTO bulletin.student_corrected_copy (user_id,corrected_copy_id)  
+VALUES (1,2);
 
 ----------COMPETENCE--------------
 INSERT INTO bulletin.competence (competence_id,label,eg_id) 
@@ -284,6 +284,18 @@ INSERT INTO bulletin.competence (competence_id,label,eg_id)
 VALUES (2,'C2 GIF 501',2);
 INSERT INTO bulletin.competence (competence_id,label,eg_id) 
 VALUES (3,'C3 GIF 501',2);
+
+-----------CRITERION---------------------
+INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id,competence_id) 
+VALUES (1,'Resultat A',10,100,1,1,'Pointage resultat A',1,1);
+INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id,competence_id) 
+VALUES (2,'Demarche A',10,100,1,1,'Pointage demarche A',1,2);
+INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id,competence_id) 
+VALUES (3,'Resultat B',10,100,1,3,'Pointage du B',1,3);
+INSERT INTO bulletin.criterion (criterion_id,label,weighting,NT_maxpoints,rubric_id,value,NT_comment,corrected_copy_id,competence_id) 
+VALUES (4,'Resultat 1',10,100,3,5,'Resolution probleme',2,1);
+
+
 --------------------------------------VIEW-----------------------------------------
 -----------------------------------------------------------------------------------
 
@@ -344,7 +356,40 @@ CREATE OR REPLACE VIEW bulletin.v_travaux_students_eg AS
 ALTER TABLE bulletin.v_travaux_students_eg
   OWNER TO superopus;
  
- 
+ --view montrant les notes pour les travaux et competences des eg
+ CREATE OR REPLACE VIEW bulletin.v_notes_evaluations_competences_eg AS 
+
+SELECT 
+  student.student_id, 
+  competence.competence_id, 
+  competence.label AS label_competence, 
+  criterion.label AS label_criterion, 
+  criterion.value AS note, 
+  evaluation_mix.eval_id, 
+  evaluation_mix.label AS label_eval,
+  educational_goal_mix.label AS eg_label
+FROM 
+  bulletin.competence, 
+  bulletin.criterion, 
+  bulletin.corrected_copy, 
+  bulletin.student_corrected_copy, 
+  bulletin.student, 
+  bulletin.rubric, 
+  bulletin.evaluation_mix,
+  bulletin.educational_goal_evaluation,
+  bulletin.educational_goal_mix
+WHERE 
+  criterion.competence_id = competence.competence_id AND
+  criterion.rubric_id = rubric.rubric_id AND
+  corrected_copy.corrected_copy_id = student_corrected_copy.corrected_copy_id AND
+  student_corrected_copy.user_id = student.user_id AND
+  student_corrected_copy.corrected_copy_id = criterion.corrected_copy_id AND
+  rubric.eval_id = evaluation_mix.eval_id AND
+  educational_goal_evaluation.eval_id = evaluation_mix.eval_id AND
+  educational_goal_mix.eg_id = educational_goal_evaluation.eg_id;
+  
+ALTER TABLE bulletin.v_notes_evaluations_competences_eg
+  OWNER TO superopus;
 
 --------------------------------------TYPE RETOUR----------------------------------
 -----------------------------------------------------------------------------------
