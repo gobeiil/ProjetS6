@@ -365,6 +365,7 @@ SELECT
   competence.label AS label_competence, 
   criterion.label AS label_criterion, 
   criterion.value AS note, 
+  criterion.weighting AS ponderation,
   evaluation_mix.eval_id, 
   evaluation_mix.label AS label_eval,
   educational_goal_mix.label AS eg_label
