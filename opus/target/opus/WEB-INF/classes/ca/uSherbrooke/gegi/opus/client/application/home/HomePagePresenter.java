@@ -21,8 +21,11 @@ import ca.uSherbrooke.gegi.opus.client.application.home.user.UserWidgetPresenter
 import ca.uSherbrooke.gegi.opus.client.place.NameTokens;
 
 import ca.uSherbrooke.gegi.opus.shared.Grading.Course;
+import ca.uSherbrooke.gegi.opus.shared.Grading.SessionGrading;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGrading;
 import ca.uSherbrooke.gegi.opus.shared.dispatch.GetGradingResult;
+import ca.uSherbrooke.gegi.opus.shared.dispatch.GetSessionGrading;
+import ca.uSherbrooke.gegi.opus.shared.dispatch.GetSessionGradingResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
@@ -48,6 +51,7 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
     public final IndirectProvider<UserWidgetPresenter> provider;
     private List<UserData> listUser;
     public static ArrayList<String> educGoalArray = new ArrayList<>();
+    public static ArrayList<String> sessionArray = new ArrayList<>();
 
     @Inject DispatchAsync dispatchAsync;
     @Inject SideMenuPresenter sideMenuPresenter;
@@ -56,7 +60,8 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         public void setListGroup(List<GroupData> listGroup);
         public void clearUsers();
         public void resetView();
-        public void setEducationalGoalPanel(ArrayList<String> educGoalArray);
+        public void setEducationalGoalPanel(SessionGrading sessionGrading);
+        public void setSessionDropdown(ArrayList<String> sessionArray);
     }
 
     @ProxyStandard
@@ -90,22 +95,49 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         action.setRetrieveAdministratedGroups(true);
         action.setRetrieveMemberGroups(true);
         dispatchAsync.execute(action, getGroupsAsyncCallback);
-        dispatchAsync.execute(new GetGrading("gobb2201"), new AsyncCallback<GetGradingResult>() {
+        //dispatchAsync.execute(new GetGrading("aubm2009"), new AsyncCallback<GetGradingResult>() {
+        //    @Override
+        //    public void onFailure(Throwable throwable) {
+        //        AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes.");
+        //    }
+        //
+        //
+        //    @Override
+        //    public void onSuccess(GetGradingResult getGradingResult) {
+        //        int i = 0;
+        //        for (Course course: getGradingResult.getCourseArrayList()) {
+        //            educGoalArray.add(i++, course.getLabel() + " - " + course.getCourseName());
+        //            GWT.log(course.getLabel());
+        //        }
+        //    }
+        //});
+
+        dispatchAsync.execute(new GetSessionGrading("S6", "aubm2009"), new AsyncCallback<GetSessionGradingResult>() {
             @Override
             public void onFailure(Throwable throwable) {
-                AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes.");
+                AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes 222.");
             }
 
             @Override
-            public void onSuccess(GetGradingResult getGradingResult) {
-                int i = 0;
-                for (Course course: getGradingResult.getCourseArrayList()) {
-                    educGoalArray.add(i++, course.getLabel() + " - " + course.getCourseName());
-                    GWT.log(course.getLabel());
-                }
-                getView().setEducationalGoalPanel(educGoalArray);
+            public void onSuccess(GetSessionGradingResult getSessionGradingResult) {
+
+                int j = 0;
+
+                SessionGrading sessionGrading = getSessionGradingResult.getSessionGrading();
+                GWT.log(sessionGrading.getAPList().size() + " size");
+                GWT.log(sessionGrading.getAPList().get(0).getLabel());
+
+                getView().setEducationalGoalPanel(sessionGrading);
             }
         });
+
+        sessionArray.add(0,"Session 1");
+        sessionArray.add(1,"Session 2");
+        sessionArray.add(2,"Session 3");
+        sessionArray.add(3,"Session 4");
+        sessionArray.add(4,"Session 5");
+
+        getView().setSessionDropdown(sessionArray);
     }
 
     @Override

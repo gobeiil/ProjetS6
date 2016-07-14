@@ -128,8 +128,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${target.jdk}</source>
-                    <target>${target.jdk}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>${sourceEncoding}</encoding>
                 </configuration>
             </plugin>

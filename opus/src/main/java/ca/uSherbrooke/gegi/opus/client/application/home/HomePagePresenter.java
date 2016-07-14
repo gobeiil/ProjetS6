@@ -124,6 +124,8 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
                 int j = 0;
 
                 SessionGrading sessionGrading = getSessionGradingResult.getSessionGrading();
+                GWT.log(sessionGrading.getAPList().size() + " size");
+                GWT.log(sessionGrading.getAPList().get(0).getLabel());
 
                 getView().setEducationalGoalPanel(sessionGrading);
             }

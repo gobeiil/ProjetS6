@@ -1,8 +1,10 @@
+GRANT ALL ON TABLE bulletin.competence TO GROUP opus;
+GRANT ALL ON TABLE bulletin.competence_eg TO GROUP opus;
 GRANT ALL ON TABLE bulletin.corrected_copy TO GROUP opus;
-GRANT ALL ON TABLE bulletin.criterion TO GROUP opus;
 GRANT ALL ON TABLE bulletin.educational_goal_mix TO GROUP opus;
 GRANT ALL ON TABLE bulletin.educational_goal_evaluation TO GROUP opus;
 GRANT ALL ON TABLE bulletin.evaluation_mix TO GROUP opus;
+GRANT ALL ON TABLE bulletin.evaluation_type TO GROUP opus;
 GRANT ALL ON TABLE bulletin.educational_goal_mix TO GROUP opus;
 GRANT ALL ON TABLE bulletin.notif_eval TO GROUP opus;
 GRANT ALL ON TABLE bulletin.rubric TO GROUP opus;
