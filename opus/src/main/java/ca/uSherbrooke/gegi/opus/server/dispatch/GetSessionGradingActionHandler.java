@@ -149,7 +149,14 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
                     }
                     travail.getBoxScoreArrayList().add(boxScore);
                 }
+                travail.setTotalBoxScore(new BoxScore(-1, 15, 30, 20, 2));
             }
+            ArrayList<BoxScore> list = new ArrayList<>();
+            for (int i = 1; i <= ap.getNumberOfCompetencies(); i++)
+            {
+                list.add(new BoxScore(i, 100, 150, 99, 10));
+            }
+            ap.setGrandTotal(new BoxScore(-1, 500, 600, 450, 20));
         }
         return new GetSessionGradingResult(sessionGrading);
     }

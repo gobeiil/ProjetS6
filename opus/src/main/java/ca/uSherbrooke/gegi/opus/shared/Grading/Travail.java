@@ -9,14 +9,15 @@ import java.util.ArrayList;
 public class Travail implements Serializable{
     private String name;
     private ArrayList<BoxScore> boxScoreArrayList;
+    private BoxScore totalBoxScore;
 
     public Travail() {
-        this.boxScoreArrayList = new ArrayList<BoxScore>();
+        this.boxScoreArrayList = new ArrayList<>();
     }
 
     public Travail(String name) {
         this.name = name;
-        this.boxScoreArrayList = new ArrayList<BoxScore>();
+        this.boxScoreArrayList = new ArrayList<>();
     }
 
     public Travail(String name, ArrayList<BoxScore> boxScoreArrayList) {
@@ -40,5 +41,13 @@ public class Travail implements Serializable{
 
     public void setBoxScoreArrayList(ArrayList<BoxScore> boxScoreArrayList) {
         this.boxScoreArrayList = boxScoreArrayList;
+    }
+
+    public BoxScore getTotalBoxScore() {
+        return totalBoxScore;
+    }
+
+    public void setTotalBoxScore(BoxScore totalBoxScore) {
+        this.totalBoxScore = totalBoxScore;
     }
 }
