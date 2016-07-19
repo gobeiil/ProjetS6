@@ -156,6 +156,7 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
             {
                 list.add(new BoxScore(i, 100, 150, 99, 10));
             }
+            ap.setTotalCompetencyBoxScore(list);
             ap.setGrandTotal(new BoxScore(-1, 500, 600, 450, 20));
         }
         return new GetSessionGradingResult(sessionGrading);
