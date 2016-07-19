@@ -86,6 +86,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
         for (AP item: educationalGoalArray.getAPList()) {
             int nbCompEducaGoal = item.getNumberOfCompetencies();
+            GWT.log("" + nbCompEducaGoal);
             //int nbEvaluationEducaGoal = 3;
 
             Div educGoalDiv = new Div();

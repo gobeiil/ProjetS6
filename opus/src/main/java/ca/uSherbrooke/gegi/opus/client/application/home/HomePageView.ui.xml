@@ -12,7 +12,6 @@
     <ui:style src="HomePageStyles.css" />
 
     <g:HTMLPanel>
-        <b:PageHeader text="Liste de mes groupes" subText="Opus" />
         <opus_page:Page ui:field="panelGroups" />
         <g:HTMLPanel ui:field="panelUsers" />
         <g_pager:SimplePager ui:field="pager" location="CENTER" width="100%" />
