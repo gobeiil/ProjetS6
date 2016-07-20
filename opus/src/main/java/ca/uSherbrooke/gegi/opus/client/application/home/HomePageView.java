@@ -9,6 +9,8 @@ import ca.uSherbrooke.gegi.commons.core.shared.entity.GroupData;
 import ca.uSherbrooke.gegi.opus.shared.Grading.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -26,6 +28,7 @@ import org.gwtbootstrap3.client.ui.html.Div;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.gwt.dom.client.Style.Unit.PCT;
 import static com.google.gwt.dom.client.Style.Unit.PX;
 
 
@@ -82,8 +85,6 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
     public void setEducationalGoalPanel(SessionGrading educationalGoalArray){
 
-
-
         for (AP item: educationalGoalArray.getAPList()) {
             int nbCompEducaGoal = item.getNumberOfCompetencies();
             GWT.log("" + nbCompEducaGoal);
@@ -96,7 +97,8 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             //educGoalDiv.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
             //educGoalDiv.getElement().getStyle().setBorderWidth(2, PX);
 
-            Label educGoalName = new Label(item.getLabel() + "-" + item.getCourseName());
+            Label educGoalName = new Label();
+            educGoalName.setText('\u25BF' + "  " + item.getLabel() + "-" + item.getCourseName());
             educGoalName.getElement().getStyle().setPaddingTop(4, PX);
             educGoalName.getElement().getStyle().setBackgroundColor("#2D9D5F");
             educGoalName.getElement().getStyle().setFontSize(16, PX);
@@ -126,6 +128,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             for (int i = 0; i <= nbCompEducaGoal + 1; i++) {
                 evaluationGrid.getColumnFormatter().setWidth(i, "112");
                 evaluationGrid.getCellFormatter().getElement(0, i).getStyle().setTextAlign(Style.TextAlign.CENTER);
+                evaluationGrid.getCellFormatter().getElement(0,i).getStyle().setBackgroundColor("#CBE6D7");
                 evaluationGrid.setText(0,i,descriptionList.get(i));
             }
 
@@ -135,6 +138,7 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
                 Travail travail = travailList.get(j-1);
                 ArrayList<BoxScore> boxScores = travail.getBoxScoreArrayList();
                 evaluationGrid.setText(j, 0, travail.getName());
+                evaluationGrid.getCellFormatter().getElement(j, 0).getStyle().setPaddingLeft(4,PX);
 
                 for (int k = 2; k <= boxScores.size() + 1; k++) {
                     BoxScore boxScore = boxScores.get(k-2);
@@ -159,6 +163,10 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
                 //TOTAL TRAVAIL
                 evaluationGrid.getCellFormatter().getElement(j, 1).getStyle().setTextAlign(Style.TextAlign.CENTER);
+                evaluationGrid.getElement().getStyle().setWidth(101, PCT);
+                evaluationGrid.getElement().getStyle().setMarginBottom(-1,PX);
+                evaluationGrid.getElement().getStyle().setMarginLeft(-1,PX);
+
 
                 BoxScore totalBoxScore = travail.getTotalBoxScore();
 
