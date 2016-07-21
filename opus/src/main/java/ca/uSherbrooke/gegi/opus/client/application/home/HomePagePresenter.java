@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import ca.uSherbrooke.gegi.commons.core.client.accessRestriction.AuthenticationGatekeeper;
 import ca.uSherbrooke.gegi.commons.core.client.presenter.application.ApplicationPresenter;
 import ca.uSherbrooke.gegi.commons.core.client.utils.AsyncCallbackFailed;
+import ca.uSherbrooke.gegi.commons.core.server.utils.UserSession;
 import ca.uSherbrooke.gegi.commons.core.shared.dispatch.GetGroups;
 import ca.uSherbrooke.gegi.commons.core.shared.dispatch.GetGroupsResult;
 import ca.uSherbrooke.gegi.commons.core.shared.dispatch.GetUsers;
@@ -41,6 +42,8 @@ import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
 import com.gwtplatform.mvp.client.presenter.slots.Slot;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
+import org.eclipse.persistence.sessions.Session;
+import org.eclipse.persistence.sessions.server.ServerSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +115,8 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         //    }
         //});
 
-        dispatchAsync.execute(new GetSessionGrading("S6", "aubm2009"), new AsyncCallback<GetSessionGradingResult>() {
+
+        dispatchAsync.execute(new GetSessionGrading("S6"), new AsyncCallback<GetSessionGradingResult>() {
             @Override
             public void onFailure(Throwable throwable) {
                 AsyncCallbackFailed.asyncCallbackFailed(throwable, "Impossible de chercher les notes 222.");
@@ -124,8 +128,6 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
                 int j = 0;
 
                 SessionGrading sessionGrading = getSessionGradingResult.getSessionGrading();
-                GWT.log(sessionGrading.getAPList().size() + " size");
-                GWT.log(sessionGrading.getAPList().get(0).getLabel());
 
                 getView().setEducationalGoalPanel(sessionGrading);
             }

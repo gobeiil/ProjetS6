@@ -1,6 +1,11 @@
 package ca.uSherbrooke.gegi.opus.shared.dispatch;
 
+import ca.uSherbrooke.gegi.commons.core.server.utils.UserSession;
+import ca.uSherbrooke.gegi.commons.core.server.utils.UserSessionImpl;
+import com.google.inject.Inject;
 import com.gwtplatform.dispatch.rpc.shared.ActionImpl;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by ben_g on 2016-07-07.
@@ -15,10 +20,10 @@ public class GetSessionGrading extends ActionImpl<GetSessionGradingResult> {
 
     }
 
-    public GetSessionGrading(String session, String cip)
+    public GetSessionGrading(String session)
     {
         this.session = session;
-        this.cip = cip;
+        //this.cip = cip;
     }
 
     public String getSession() {

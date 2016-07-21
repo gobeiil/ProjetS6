@@ -9,6 +9,8 @@ public class AP extends Course {
 
     private int numberOfCompetencies;
     private ArrayList<Travail> travails;
+    private ArrayList<BoxScore> totalCompetencyBoxScore;
+    private BoxScore grandTotal;
 
     public AP()
     {
@@ -41,5 +43,21 @@ public class AP extends Course {
 
     public void setNumberOfCompetencies(int numberOfCompetencies) {
         this.numberOfCompetencies = numberOfCompetencies;
+    }
+
+    public ArrayList<BoxScore> getTotalCompetencyBoxScore() {
+        return totalCompetencyBoxScore;
+    }
+
+    public void setTotalCompetencyBoxScore(ArrayList<BoxScore> totalCompetencyBoxScore) {
+        this.totalCompetencyBoxScore = totalCompetencyBoxScore;
+    }
+
+    public BoxScore getGrandTotal() {
+        return grandTotal;
+    }
+
+    public void setGrandTotal(BoxScore grandTotal) {
+        this.grandTotal = grandTotal;
     }
 }

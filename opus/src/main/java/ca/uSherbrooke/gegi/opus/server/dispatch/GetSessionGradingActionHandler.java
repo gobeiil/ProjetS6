@@ -1,5 +1,6 @@
 package ca.uSherbrooke.gegi.opus.server.dispatch;
 
+import ca.uSherbrooke.gegi.commons.core.server.utils.UserSession;
 import ca.uSherbrooke.gegi.opus.shared.Grading.AP;
 import ca.uSherbrooke.gegi.opus.shared.Grading.BoxScore;
 import ca.uSherbrooke.gegi.opus.shared.Grading.SessionGrading;
@@ -14,6 +15,7 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class GetSessionGradingActionHandler implements ActionHandler<GetSessionGrading, GetSessionGradingResult> {
 
 
+    @javax.inject.Inject UserSession userSession;
     @Inject @Opus
     Dao dao;
 
@@ -99,12 +102,13 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
 
 
         return result;*/
-        getSessionGrading.setCip("elsf2301");
+        String userCip = userSession.getAdministrativeUserId();
+
         dao.clearEntityManager();
         SessionGrading sessionGrading = new SessionGrading();
 
-        sessionGrading.setSession("S6");
-        List<Map<String, Object>> query = dao.getMap("SELECT label, description FROM bulletin.v_students_eg where student_id = \'" + getSessionGrading.getCip() + "\';");
+        sessionGrading.setSession("S1");
+        List<Map<String, Object>> query = dao.getMap("SELECT label, description FROM bulletin.v_students_eg where student_id = \'" + userCip + "\';");
         for (Map<String, Object> queryItem : query) {
             AP newAP = new AP();
             newAP.setCourseName((String) queryItem.get("description"));
@@ -113,15 +117,15 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
         }
         for (AP ap : sessionGrading.getAPList())
         {
-            List<Map<String, Object>> queryResult = dao.getMap("SELECT label_comp FROM bulletin.v_competence_students_eg as compAP inner join bulletin.educational_goal_mix egmix on compAP.label_eg = egmix.label where student_id = \'"+ getSessionGrading.getCip() +"\' and label_eg = \'"+ ap.getLabel() +"\' order by label_comp desc;");
+            List<Map<String, Object>> queryResult = dao.getMap("SELECT label_comp FROM bulletin.v_competence_students_eg as compAP inner join bulletin.educational_goal_mix egmix on compAP.label_eg = egmix.label where student_id = \'"+ userCip +"\' and label_eg = \'"+ ap.getLabel() +"\' order by label_comp desc;");
             ap.setNumberOfCompetencies(queryResult.size());
-            List<Map<String, Object>> apQueryResult = dao.getMap("SELECT label_eg, label_eval FROM bulletin.v_travaux_students_eg where student_id = \'" + getSessionGrading.getCip() + "\' and label_eg = \'" + ap.getLabel() + "\';");
+            List<Map<String, Object>> apQueryResult = dao.getMap("SELECT label_eg, label_eval FROM bulletin.v_travaux_students_eg where student_id = \'" + userCip + "\' and label_eg = \'" + ap.getLabel() + "\';");
             for (Map<String, Object> apMap : apQueryResult) {
                 ap.getTravails().add(new Travail((String) apMap.get("label_eval")));
             }
             for (Travail travail : ap.getTravails()) {
                 for (int i = 1; i <= ap.getNumberOfCompetencies(); i++) {
-                    List<Map<String, Object>> travailQueryResult = dao.getMap("SELECT note, maxpoints, average, ecarttype FROM bulletin.v_resultats_eg_ev_comp resultats Inner join bulletin.v_avg_ecarttype_comp_ap avg_ect on (avg_ect.label_eg = resultats.ap AND avg_ect.label_eval = resultats.travail and avg_ect.label_comp = resultats.competence) where student_id = \'" + getSessionGrading.getCip() + "\' and travail = \'" + travail.getName() + "\' and competence = " + i + "");
+                    List<Map<String, Object>> travailQueryResult = dao.getMap("SELECT note, maxpoints, average, ecarttype FROM bulletin.v_resultats_eg_ev_comp resultats Inner join bulletin.v_avg_ecarttype_comp_ap avg_ect on (avg_ect.label_eg = resultats.ap AND avg_ect.label_eval = resultats.travail and avg_ect.label_comp = resultats.competence) where student_id = \'" + userCip + "\' and travail = \'" + travail.getName() + "\' and competence = " + i + "");
                     if (travailQueryResult.size() == 0) {
                         continue;
                     }
@@ -145,7 +149,15 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
                     }
                     travail.getBoxScoreArrayList().add(boxScore);
                 }
+                travail.setTotalBoxScore(new BoxScore(-1, 15, 30, 20, 2));
             }
+            ArrayList<BoxScore> list = new ArrayList<>();
+            for (int i = 1; i <= ap.getNumberOfCompetencies(); i++)
+            {
+                list.add(new BoxScore(i, 100, 150, 99, 10));
+            }
+            ap.setTotalCompetencyBoxScore(list);
+            ap.setGrandTotal(new BoxScore(-1, 500, 600, 450, 20));
         }
         return new GetSessionGradingResult(sessionGrading);
     }
