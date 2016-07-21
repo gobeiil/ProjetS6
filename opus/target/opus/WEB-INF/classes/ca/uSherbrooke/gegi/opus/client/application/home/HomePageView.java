@@ -9,6 +9,8 @@ import ca.uSherbrooke.gegi.commons.core.shared.entity.GroupData;
 import ca.uSherbrooke.gegi.opus.shared.Grading.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -26,6 +28,7 @@ import org.gwtbootstrap3.client.ui.html.Div;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.gwt.dom.client.Style.Unit.PCT;
 import static com.google.gwt.dom.client.Style.Unit.PX;
 
 
@@ -82,10 +85,9 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
     public void setEducationalGoalPanel(SessionGrading educationalGoalArray){
 
-
-
         for (AP item: educationalGoalArray.getAPList()) {
-            int nbCompEducaGoal = 3;
+            int nbCompEducaGoal = item.getNumberOfCompetencies();
+            GWT.log("" + nbCompEducaGoal);
             //int nbEvaluationEducaGoal = 3;
 
             Div educGoalDiv = new Div();
@@ -95,7 +97,8 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             //educGoalDiv.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
             //educGoalDiv.getElement().getStyle().setBorderWidth(2, PX);
 
-            Label educGoalName = new Label(item.getLabel() + "-" + item.getCourseName());
+            Label educGoalName = new Label();
+            educGoalName.setText('\u25BF' + "  " + item.getLabel() + "-" + item.getCourseName());
             educGoalName.getElement().getStyle().setPaddingTop(4, PX);
             educGoalName.getElement().getStyle().setBackgroundColor("#2D9D5F");
             educGoalName.getElement().getStyle().setFontSize(16, PX);
@@ -125,19 +128,17 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
             for (int i = 0; i <= nbCompEducaGoal + 1; i++) {
                 evaluationGrid.getColumnFormatter().setWidth(i, "112");
                 evaluationGrid.getCellFormatter().getElement(0, i).getStyle().setTextAlign(Style.TextAlign.CENTER);
+                evaluationGrid.getCellFormatter().getElement(0,i).getStyle().setBackgroundColor("#CBE6D7");
                 evaluationGrid.setText(0,i,descriptionList.get(i));
             }
 
             //Grille de note
             for (int j = 1; j < travailList.size() + 1; j++) {
 
-                //Temporaire
-                int totalTravail = 0;
-                int totalTravailPond = 0;
-
                 Travail travail = travailList.get(j-1);
                 ArrayList<BoxScore> boxScores = travail.getBoxScoreArrayList();
                 evaluationGrid.setText(j, 0, travail.getName());
+                evaluationGrid.getCellFormatter().getElement(j, 0).getStyle().setPaddingLeft(4,PX);
 
                 for (int k = 2; k <= boxScores.size() + 1; k++) {
                     BoxScore boxScore = boxScores.get(k-2);
@@ -156,59 +157,64 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
                         tooltip.setTitle(tooltipString);
                         tooltip.setWidget(new Label(boxScore.getGrade() + "/" + boxScore.getPonderation()));
 
-                        //Temporaire
-                        totalTravail += boxScore.getGrade();
-
                         evaluationGrid.setWidget(j, k, tooltip);
                     }
-
-                    //Temporaire
-                    totalTravailPond += boxScore.getPonderation();
                 }
 
                 //TOTAL TRAVAIL
                 evaluationGrid.getCellFormatter().getElement(j, 1).getStyle().setTextAlign(Style.TextAlign.CENTER);
+                evaluationGrid.getElement().getStyle().setWidth(101, PCT);
+                evaluationGrid.getElement().getStyle().setMarginBottom(-1,PX);
+                evaluationGrid.getElement().getStyle().setMarginLeft(-1,PX);
 
-                String tooltipStringTotal = new String();
-                tooltipStringTotal = "Moyenne: 95 | Ecart-Type: 11";
+
+                BoxScore totalBoxScore = travail.getTotalBoxScore();
 
                 Tooltip tooltipTotal = new Tooltip();
 
-                tooltipTotal.setTitle(tooltipStringTotal);
-
-                //Temporaire
-                if(totalTravail == 0) {
+                if(totalBoxScore.getGrade() == -1) {
                     Label totalLabel = new Label();
                     totalLabel.getElement().getStyle().setColor("#a6a6a6");
-                    totalLabel.setText("" + totalTravailPond);
+                    totalLabel.setText("" + totalBoxScore.getPonderation());
                     tooltipTotal.setWidget(totalLabel);
                 }
                 else{
-                    tooltipTotal.setWidget(new Label(totalTravail + "/" + totalTravailPond));
+                    String tooltipStringTotal = new String();
+                    tooltipStringTotal = "Moyenne: " + totalBoxScore.getAverage() + "| Ecart-Type: " + totalBoxScore.getStandardDeviation();
+                    tooltipTotal.setTitle(tooltipStringTotal);
+                    tooltipTotal.setWidget(new Label(totalBoxScore.getGrade() + "/" + totalBoxScore.getPonderation()));
                 }
 
                 evaluationGrid.setWidget(j,1,tooltipTotal);
-
-                //END TOTAL TRAVAIL
             }
 
             Grid totalGrid = new Grid(1, nbCompEducaGoal);
             totalGrid.setBorderWidth(1);
 
             //Grille de competence
+            ArrayList<BoxScore> compBoxScores = item.getTotalCompetencyBoxScore();
+
             for (int i = 0; i < nbCompEducaGoal; i++) {
                 totalGrid.getColumnFormatter().setWidth(i, "149");
                 totalGrid.getCellFormatter().getElement(0, i).getStyle().setTextAlign(Style.TextAlign.CENTER);
                 totalGrid.getCellFormatter().getElement(0, i).getStyle().setFontSize(14, PX);
                 totalGrid.getCellFormatter().getElement(0, i).getStyle().setFontWeight(Style.FontWeight.BOLD);
 
-                String tooltipString = new String();
-                tooltipString = "Moyenne: 250 | Ecart-Type: 25";
+                BoxScore unityCompBoxScore = compBoxScores.get(i);
 
                 Tooltip tooltip = new Tooltip();
 
-                tooltip.setTitle(tooltipString);
-                tooltip.setWidget(new Label("C" + (i + 1) + ": " + " 300/300"));
+                if(unityCompBoxScore.getGrade() == -1) {
+                    Label totalLabel = new Label();
+                    totalLabel.setText("0/" + unityCompBoxScore.getPonderation());
+                    tooltip.setWidget(totalLabel);
+                }
+                else{
+                    String tooltipString = new String();
+                    tooltipString = "Moyenne: " + unityCompBoxScore.getAverage() + "| Ecart-Type: " + unityCompBoxScore.getStandardDeviation();
+                    tooltip.setTitle(tooltipString);
+                    tooltip.setWidget(new Label("C" + (i + 1) + ": " + unityCompBoxScore.getGrade() + "/" + unityCompBoxScore.getPonderation()));
+                }
 
                 totalGrid.setWidget(0,i,tooltip);
             }
@@ -218,22 +224,34 @@ public class HomePageView extends ViewWithUiHandlers<HomePageUiHandlers> impleme
 
             HorizontalPanel totalFinalDiv = new HorizontalPanel();
 
-            Label totalLabel = new Label("900/900");
-            totalLabel.getElement().getStyle().setMarginLeft(33, PX);
-            totalLabel.getElement().getStyle().setMarginTop(6, PX);
-            totalLabel.getElement().getStyle().setFontSize(16, PX);
-            totalLabel.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
-            totalLabel.getElement().getStyle().setHeight(35, PX);
+            BoxScore grandTotalBoxScore = item.getGrandTotal();
 
-            String tooltipStringTotal = new String();
-            tooltipStringTotal = "Moyenne: 850 | Ecart-Type: 25";
+            Tooltip tooltipGrandTotal = new Tooltip();
 
-            Tooltip tooltipTotal = new Tooltip();
+            if(grandTotalBoxScore.getGrade() == -1) {
+                Label grandTotalLabel = new Label();
+                grandTotalLabel.setText("0/" + grandTotalBoxScore.getPonderation());
+                grandTotalLabel.getElement().getStyle().setMarginLeft(33, PX);
+                grandTotalLabel.getElement().getStyle().setMarginTop(6, PX);
+                grandTotalLabel.getElement().getStyle().setFontSize(16, PX);
+                grandTotalLabel.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
+                grandTotalLabel.getElement().getStyle().setHeight(35, PX);
+                tooltipGrandTotal.setWidget(grandTotalLabel);
+            }
+            else{
+                String tooltipStringGrandTotal = new String();
+                tooltipStringGrandTotal = "Moyenne: " + grandTotalBoxScore.getAverage() + " | Ecart-Type: " + grandTotalBoxScore.getStandardDeviation();
+                tooltipGrandTotal.setTitle(tooltipStringGrandTotal);
+                Label grandTotalLabel = new Label(grandTotalBoxScore.getGrade() + "/" + grandTotalBoxScore.getPonderation());
+                grandTotalLabel.getElement().getStyle().setMarginLeft(33, PX);
+                grandTotalLabel.getElement().getStyle().setMarginTop(6, PX);
+                grandTotalLabel.getElement().getStyle().setFontSize(16, PX);
+                grandTotalLabel.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
+                grandTotalLabel.getElement().getStyle().setHeight(35, PX);
+                tooltipGrandTotal.setWidget(grandTotalLabel);
+            }
 
-            tooltipTotal.setTitle(tooltipStringTotal);
-            tooltipTotal.setWidget(totalLabel);
-
-            totalFinalDiv.add(tooltipTotal);
+            totalFinalDiv.add(tooltipGrandTotal);
             totalFinalDiv.add(totalGrid);
             totalFinalDiv.getElement().getStyle().setMarginTop(10, PX);
             totalFinalDiv.getElement().getStyle().setMarginBottom(3, PX);

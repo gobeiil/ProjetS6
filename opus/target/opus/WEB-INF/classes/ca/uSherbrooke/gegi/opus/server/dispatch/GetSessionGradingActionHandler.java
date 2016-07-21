@@ -1,5 +1,6 @@
 package ca.uSherbrooke.gegi.opus.server.dispatch;
 
+import ca.uSherbrooke.gegi.commons.core.server.utils.UserSession;
 import ca.uSherbrooke.gegi.opus.shared.Grading.AP;
 import ca.uSherbrooke.gegi.opus.shared.Grading.BoxScore;
 import ca.uSherbrooke.gegi.opus.shared.Grading.SessionGrading;
@@ -14,6 +15,7 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class GetSessionGradingActionHandler implements ActionHandler<GetSessionGrading, GetSessionGradingResult> {
 
 
+    @javax.inject.Inject UserSession userSession;
     @Inject @Opus
     Dao dao;
 
@@ -99,12 +102,14 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
 
 
         return result;*/
-        getSessionGrading.setCip("elsf2301");
+        String userCip = userSession.getAdministrativeUserId();
+        userCip = "elsf2301";
+
         dao.clearEntityManager();
         SessionGrading sessionGrading = new SessionGrading();
 
-        sessionGrading.setSession("S6");
-        List<Map<String, Object>> query = dao.getMap("SELECT label, description FROM bulletin.v_students_eg where student_id = \'" + getSessionGrading.getCip() + "\';");
+        sessionGrading.setSession("S1");
+        List<Map<String, Object>> query = dao.getMap("SELECT label, description FROM bulletin.v_students_eg where student_id = \'" + userCip + "\';");
         for (Map<String, Object> queryItem : query) {
             AP newAP = new AP();
             newAP.setCourseName((String) queryItem.get("description"));
@@ -113,15 +118,15 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
         }
         for (AP ap : sessionGrading.getAPList())
         {
-            List<Map<String, Object>> queryResult = dao.getMap("SELECT label_comp FROM bulletin.v_competence_students_eg as compAP inner join bulletin.educational_goal_mix egmix on compAP.label_eg = egmix.label where student_id = \'"+ getSessionGrading.getCip() +"\' and label_eg = \'"+ ap.getLabel() +"\' order by label_comp desc;");
+            List<Map<String, Object>> queryResult = dao.getMap("SELECT label_comp FROM bulletin.v_competence_students_eg as compAP inner join bulletin.educational_goal_mix egmix on compAP.label_eg = egmix.label where student_id = \'"+ userCip +"\' and label_eg = \'"+ ap.getLabel() +"\' order by label_comp desc;");
             ap.setNumberOfCompetencies(queryResult.size());
-            List<Map<String, Object>> apQueryResult = dao.getMap("SELECT label_eg, label_eval FROM bulletin.v_travaux_students_eg where student_id = \'" + getSessionGrading.getCip() + "\' and label_eg = \'" + ap.getLabel() + "\';");
+            List<Map<String, Object>> apQueryResult = dao.getMap("SELECT label_eg, label_eval FROM bulletin.v_travaux_students_eg where student_id = \'" + userCip + "\' and label_eg = \'" + ap.getLabel() + "\';");
             for (Map<String, Object> apMap : apQueryResult) {
                 ap.getTravails().add(new Travail((String) apMap.get("label_eval")));
             }
             for (Travail travail : ap.getTravails()) {
                 for (int i = 1; i <= ap.getNumberOfCompetencies(); i++) {
-                    List<Map<String, Object>> travailQueryResult = dao.getMap("SELECT note, maxpoints, average, ecarttype FROM bulletin.v_resultats_eg_ev_comp resultats Inner join bulletin.v_avg_ecarttype_comp_ap avg_ect on (avg_ect.label_eg = resultats.ap AND avg_ect.label_eval = resultats.travail and avg_ect.label_comp = resultats.competence) where student_id = \'" + getSessionGrading.getCip() + "\' and travail = \'" + travail.getName() + "\' and competence = " + i + "");
+                    List<Map<String, Object>> travailQueryResult = dao.getMap("SELECT note, maxpoints, average, ecarttype FROM bulletin.v_resultats_eg_ev_comp resultats Inner join bulletin.v_avg_ecarttype_comp_ap avg_ect on (avg_ect.label_eg = resultats.ap AND avg_ect.label_eval = resultats.travail and avg_ect.label_comp = resultats.competence) where student_id = \'" + userCip + "\' and travail = \'" + travail.getName() + "\' and competence = " + i + ";");
                     if (travailQueryResult.size() == 0) {
                         continue;
                     }
@@ -145,7 +150,64 @@ public class GetSessionGradingActionHandler implements ActionHandler<GetSessionG
                     }
                     travail.getBoxScoreArrayList().add(boxScore);
                 }
+                List<Map<String, Object>> travailTotalQuery = dao.getMap("SELECT total, maxpoints, groupAvg.moyenne_groupe, groupEcrt.ecarttype\n" +
+                        "  FROM bulletin.v_totals_ap apTotals\n" +
+                        "  inner join bulletin.v_totals_groupavg_ap groupAvg on (groupAvg.session = apTotals.session and apTotals.ap = groupAvg.ap and apTotals.travail = groupAvg.travail)\n" +
+                        "  inner join bulletin.v_totals_groupecrt_ap groupEcrt on (groupEcrt.session = apTotals.session and apTotals.ap = groupEcrt.ap and apTotals.travail = groupEcrt.travail)\n" +
+                        "  where student_id = \'"+ userCip +"\'\n" +
+                        "  and groupAvg.ap = \'"+ ap.getLabel() +"\'\n" +
+                        "  and groupAvg.travail = \'"+ travail.getName() +"\'\n");
+                Map<String, Object> totalMap = travailTotalQuery.get(0);
+                if (totalMap == null)
+                {
+                    continue;
+                }
+                BoxScore tempBoxScore = new BoxScore();
+                if (totalMap.get("total") == null) {
+                    tempBoxScore.setGrade(-1);
+                    tempBoxScore.setPonderation((int) totalMap.get("maxpoints"));
+                    tempBoxScore.setAverage(-1);
+                    tempBoxScore.setStandardDeviation(-1);
+                } else {
+                    tempBoxScore.setGrade((int) totalMap.get("total"));
+                    tempBoxScore.setPonderation((int) totalMap.get("maxpoints"));
+                    tempBoxScore.setAverage((int) totalMap.get("moyenne_groupe"));
+                    tempBoxScore.setStandardDeviation(totalMap.get("ecarttype") == null ? -1 : (int) (totalMap.get("ecarttype")));
+                }
+                travail.setTotalBoxScore(tempBoxScore);
+
             }
+            ArrayList<BoxScore> list = new ArrayList<>();
+            for (int i = 1; i <= ap.getNumberOfCompetencies(); i++)
+            {
+                List<Map<String, Object>> travailTotalQuery = dao.getMap("SELECT total, maxpoints, groupAvg.moyenne_groupe, groupEcrt.ecarttype\n" +
+                        "  FROM bulletin.v_totals_comp compTotals\n" +
+                        "  inner join bulletin.v_totals_groupavg_comp groupAvg on (groupAvg.session = compTotals.session and compTotals.ap = groupAvg.ap and compTotals.competence = groupAvg.competence)\n" +
+                        "  inner join bulletin.v_totals_groupecrt_comp groupEcrt on (groupEcrt.session = compTotals.session and compTotals.ap = groupEcrt.ap and compTotals.competence = groupEcrt.competence)\n" +
+                        "  where student_id = \'"+ userCip +"\'\n" +
+                        "  and groupAvg.ap = \'"+ ap.getLabel() +"\'\n" +
+                        "  and groupAvg.competence = "+ i +"\n");
+                Map<String, Object> totalMap = travailTotalQuery.get(0);
+                if (totalMap == null)
+                {
+                    continue;
+                }
+                BoxScore tempBoxScore = new BoxScore();
+                if (totalMap.get("total") == null) {
+                    tempBoxScore.setGrade(-1);
+                    tempBoxScore.setPonderation((int) totalMap.get("maxpoints"));
+                    tempBoxScore.setAverage(-1);
+                    tempBoxScore.setStandardDeviation(-1);
+                } else {
+                    tempBoxScore.setGrade((int) totalMap.get("total"));
+                    tempBoxScore.setPonderation((int) totalMap.get("maxpoints"));
+                    tempBoxScore.setAverage((int) totalMap.get("moyenne_groupe"));
+                    tempBoxScore.setStandardDeviation(totalMap.get("ecarttype") == null ? -1 : (int) (totalMap.get("ecarttype")));
+                }
+                list.add(tempBoxScore);
+            }
+            ap.setTotalCompetencyBoxScore(list);
+            ap.setGrandTotal();
         }
         return new GetSessionGradingResult(sessionGrading);
     }

@@ -8,6 +8,8 @@ GRANT ALL ON TABLE bulletin.evaluation_mix TO GROUP opus;
 GRANT ALL ON TABLE bulletin.evaluation_type TO GROUP opus;
 GRANT ALL ON TABLE bulletin.educational_goal_mix TO GROUP opus;
 GRANT ALL ON TABLE bulletin.evaluation_type TO GROUP opus;
+GRANT ALL ON TABLE bulletin.ponderation TO GROUP opus;
+GRANT ALL ON TABLE bulletin.resultats TO GROUP opus;
 GRANT ALL ON TABLE bulletin.notif_eval TO GROUP opus;
 GRANT ALL ON TABLE bulletin.student TO GROUP opus;
 GRANT ALL ON TABLE bulletin.student_corrected_copy TO GROUP opus;
@@ -19,3 +21,10 @@ GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_co
 GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_resultats_eg_ev_comp TO GROUP opus;
 GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_students_eg TO GROUP opus;
 GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_travaux_students_eg TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_ap TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_comp TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_groupavg_ap TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_groupavg_comp TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_groupecrt_ap TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_groupecrt_comp TO GROUP opus;
+

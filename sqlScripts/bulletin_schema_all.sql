@@ -447,7 +447,7 @@ VALUES (3,3);
 INSERT INTO bulletin.ponderation(pond_id,maxpoints,eval_id,competence_id) 
 VALUES (1,200,1,1);
 INSERT INTO bulletin.ponderation(pond_id,maxpoints,eval_id,competence_id) 
-VALUES (2,150,1,1);
+VALUES (2,150,1,2);
 --
 INSERT INTO bulletin.ponderation(pond_id,maxpoints,eval_id,competence_id) 
 VALUES (3,50,2,1);
@@ -1123,3 +1123,192 @@ CREATE OR REPLACE VIEW bulletin.v_totals_groupecrt_comp AS
 ALTER TABLE bulletin.v_totals_groupecrt_comp
   OWNER TO superopus;
   
+
+CREATE OR REPLACE FUNCTION bulletin.f_getavgforcompeg(
+    eg character varying,
+    ev character varying,
+    comp integer)
+  RETURNS integer AS
+$BODY$
+DECLARE average integer;
+
+BEGIN
+ SELECT AVG(note) into average FROM bulletin.v_resultats_eg_ev_comp 
+ WHERE 
+ v_resultats_eg_ev_comp.ap = eg AND
+ v_resultats_eg_ev_comp.travail = ev AND
+ v_resultats_eg_ev_comp.competence = comp;
+ 
+ RETURN average;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION bulletin.f_getavgforcompeg(character varying, character varying, integer)
+  OWNER TO superopus;
+
+  
+  
+  
+-------
+
+
+
+CREATE OR REPLACE FUNCTION bulletin.f_getecarttypeforcompeg(
+    eg character varying,
+    ev character varying,
+    comp integer)
+  RETURNS integer AS
+$BODY$
+DECLARE et integer;
+
+BEGIN
+ SELECT stddev(note) into et FROM bulletin.v_resultats_eg_ev_comp 
+ WHERE 
+ v_resultats_eg_ev_comp.ap = eg AND
+ v_resultats_eg_ev_comp.travail = ev AND
+ v_resultats_eg_ev_comp.competence = comp;
+
+  IF et = NULL THEN
+    et := 0;
+ END IF;
+ 
+ RETURN et;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+  
+  
+-----
+
+
+
+CREATE OR REPLACE VIEW bulletin.v_avg_ecarttype_comp_ap AS 
+ SELECT educational_goal_mix.label AS label_eg,
+    evaluation_mix.label AS label_eval,
+    competence.label AS label_comp,
+    bulletin.f_getavgforcompeg(educational_goal_mix.label, evaluation_mix.label, competence.label) AS average,
+    bulletin.f_getecarttypeforcompeg(educational_goal_mix.label, evaluation_mix.label, competence.label) AS ecarttype
+   FROM bulletin.competence,
+    bulletin.educational_goal_mix,
+    bulletin.educational_goal_evaluation,
+    bulletin.competence_eg,
+    bulletin.evaluation_mix
+  WHERE educational_goal_mix.eg_id = educational_goal_evaluation.eg_id AND educational_goal_mix.eg_id = competence_eg.eg_id AND competence.competence_id = competence_eg.competence_id AND evaluation_mix.eval_id = educational_goal_evaluation.eval_id;
+
+ALTER TABLE bulletin.v_avg_ecarttype_comp_ap
+  OWNER TO superopus;
+  
+ALTER FUNCTION bulletin.f_getecarttypeforcompeg(character varying, character varying, integer)
+  OWNER TO superopus;
+
+  --
+
+CREATE OR REPLACE FUNCTION bulletin.f_getpondforcompeg(
+    cip character varying,
+    eg character varying,
+    comp integer)
+  RETURNS integer AS
+$BODY$
+DECLARE pondsum integer;
+
+BEGIN
+ SELECT SUM(maxpoints) into pondsum FROM bulletin.v_resultats_eg_ev_comp 
+ WHERE 
+ v_resultats_eg_ev_comp.student_id = cip AND
+ v_resultats_eg_ev_comp.AP = eg AND
+ v_resultats_eg_ev_comp.competence = comp;
+ 
+ RETURN pondsum;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION bulletin.f_getpondforcompeg(character varying, character varying, integer)
+  OWNER TO superopus;
+
+
+-- fonction get ponderation pour un travail
+CREATE OR REPLACE FUNCTION bulletin.f_getpondfortravail(
+    cip character varying,
+    eg character varying,
+    ev character varying)
+  RETURNS integer AS
+$BODY$
+DECLARE pondsum integer;
+
+BEGIN
+ SELECT SUM(maxpoints) into pondsum FROM bulletin.v_resultats_eg_ev_comp 
+ WHERE 
+ v_resultats_eg_ev_comp.student_id = cip AND
+ v_resultats_eg_ev_comp.AP = eg AND
+ v_resultats_eg_ev_comp.travail = ev;
+ 
+ RETURN pondsum;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION bulletin.f_getpondfortravail(character varying, character varying, character varying)
+  OWNER TO superopus;
+
+
+----
+
+-- vue totaux et ponderation pour cours et travaux
+CREATE OR REPLACE VIEW bulletin.v_totals_ap AS 
+ SELECT DISTINCT v_resultats_eg_ev_comp.session,
+    v_resultats_eg_ev_comp.student_id,
+    v_resultats_eg_ev_comp.ap,
+    v_resultats_eg_ev_comp.travail,
+    bulletin.f_getsumfortravail(v_resultats_eg_ev_comp.student_id, v_resultats_eg_ev_comp.ap, v_resultats_eg_ev_comp.travail) AS total,
+    bulletin.f_getpondfortravail(v_resultats_eg_ev_comp.student_id, v_resultats_eg_ev_comp.ap, v_resultats_eg_ev_comp.travail) AS maxpoints
+   FROM bulletin.v_resultats_eg_ev_comp;
+
+ALTER TABLE bulletin.v_totals_ap
+  OWNER TO superopus;
+
+--- vue totaux et ponderations pour competences
+CREATE OR REPLACE VIEW bulletin.v_totals_comp AS 
+ SELECT DISTINCT v_resultats_eg_ev_comp.session,
+    v_resultats_eg_ev_comp.student_id,
+    v_resultats_eg_ev_comp.ap,
+    v_resultats_eg_ev_comp.competence,
+    bulletin.f_getsumforcompeg(v_resultats_eg_ev_comp.student_id, v_resultats_eg_ev_comp.ap, v_resultats_eg_ev_comp.competence) AS total,
+    bulletin.f_getpondforcompeg(v_resultats_eg_ev_comp.student_id, v_resultats_eg_ev_comp.ap, v_resultats_eg_ev_comp.competence) AS maxpoints
+   FROM bulletin.v_resultats_eg_ev_comp;
+
+ALTER TABLE bulletin.v_totals_comp
+  OWNER TO superopus;
+
+  GRANT ALL ON SCHEMA bulletin TO GROUP opus;
+GRANT ALL ON TABLE bulletin.competence TO GROUP opus;
+GRANT ALL ON TABLE bulletin.competence_eg TO GROUP opus;
+GRANT ALL ON TABLE bulletin.corrected_copy TO GROUP opus;
+GRANT ALL ON TABLE bulletin.educational_goal_mix TO GROUP opus;
+GRANT ALL ON TABLE bulletin.educational_goal_evaluation TO GROUP opus;
+GRANT ALL ON TABLE bulletin.evaluation_mix TO GROUP opus;
+GRANT ALL ON TABLE bulletin.evaluation_type TO GROUP opus;
+GRANT ALL ON TABLE bulletin.educational_goal_mix TO GROUP opus;
+GRANT ALL ON TABLE bulletin.evaluation_type TO GROUP opus;
+GRANT ALL ON TABLE bulletin.ponderation TO GROUP opus;
+GRANT ALL ON TABLE bulletin.resultats TO GROUP opus;
+GRANT ALL ON TABLE bulletin.notif_eval TO GROUP opus;
+GRANT ALL ON TABLE bulletin.student TO GROUP opus;
+GRANT ALL ON TABLE bulletin.student_corrected_copy TO GROUP opus;
+GRANT ALL ON TABLE bulletin.student_score TO GROUP opus;
+GRANT ALL ON TABLE bulletin.timespan TO GROUP opus;
+GRANT ALL ON TABLE bulletin.tuiles TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_avg_ecarttype_comp_ap TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_competence_students_eg TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_resultats_eg_ev_comp TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_students_eg TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_travaux_students_eg TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_ap TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_comp TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_groupavg_ap TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_groupavg_comp TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_groupecrt_ap TO GROUP opus;
+GRANT SELECT, UPDATE, INSERT, DELETE, REFERENCES, TRIGGER ON TABLE bulletin.v_totals_groupecrt_comp TO GROUP opus;
+
